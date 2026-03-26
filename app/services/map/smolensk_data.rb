@@ -4,6 +4,7 @@ module Map
       0112 0113 0117
       0202 0203 0212 0213 0217 0218 0224
       0309 0312 0326
+      0405 0406 0408 0409 0417 0422 0426 0427
     ].freeze
 
     TERRAIN_OVERRIDES = {
@@ -31,14 +32,25 @@ module Map
       "0229" => %w[north south],
       "0230" => %w[southwest north],
       "0311" => %w[northwest southeast],
-      "0312" => %w[southwest],
-      "0322" => %w[south],
+      "0312" => %w[southwest southeast],
+      "0322" => %w[northeast south],
       "0323" => %w[north south],
       "0324" => %w[north south],
       "0325" => %w[north south],
       "0326" => %w[north south],
       "0327" => %w[north south],
-      "0328" => %w[southwest north]
+      "0328" => %w[southwest north],
+      "0411" => %w[northwest south],
+      "0412" => %w[northwest north south],
+      "0413" => %w[north south],
+      "0414" => %w[north south],
+      "0415" => %w[north south],
+      "0416" => %w[north south],
+      "0417" => %w[north south],
+      "0418" => %w[north south],
+      "0419" => %w[north south],
+      "0420" => %w[north south],
+      "0421" => %w[north southwest]
     }.freeze
 
     HEXSIDE_FEATURES = [
