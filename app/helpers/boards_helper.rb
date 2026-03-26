@@ -75,7 +75,54 @@ module BoardsHelper
     end.join(" ")
   end
 
+  def railroad_tie_path_data(directions)
+    points = Array(directions).filter_map { |direction| EDGE_POINTS[direction.to_s] }
+    center = [32.0, 27.71]
+
+    points.flat_map do |(start_point, end_point)|
+      midpoint = [
+        ((start_point[0] + end_point[0]) / 2.0).round(2),
+        ((start_point[1] + end_point[1]) / 2.0).round(2)
+      ]
+
+      tie_segments(center, midpoint)
+    end.join(" ")
+  end
+
   private
+
+  def tie_segments(start_point, end_point)
+    dx = end_point[0] - start_point[0]
+    dy = end_point[1] - start_point[1]
+    length = Math.sqrt((dx**2) + (dy**2))
+    return [] if length.zero?
+
+    unit_x = dx / length
+    unit_y = dy / length
+    normal_x = -unit_y
+    normal_y = unit_x
+    spacing = 8.0
+    tie_length = 7.0
+    offset = 7.0
+
+    segments = []
+    distance = offset
+
+    while distance < (length - 4.0)
+      anchor_x = start_point[0] + (unit_x * distance)
+      anchor_y = start_point[1] + (unit_y * distance)
+      half_tie = tie_length / 2.0
+      x1 = anchor_x - (normal_x * half_tie)
+      y1 = anchor_y - (normal_y * half_tie)
+      x2 = anchor_x + (normal_x * half_tie)
+      y2 = anchor_y + (normal_y * half_tie)
+
+      segments << format("M %.2f %.2f L %.2f %.2f", x1, y1, x2, y2)
+      distance += spacing
+    end
+
+    segments
+  end
 
   def global_segment_points(feature)
     scale = Map::HexGridBuilder::HEX_HEIGHT / BASE_HEX_HEIGHT

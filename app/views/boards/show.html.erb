@@ -103,13 +103,23 @@
                 transform="<%= hex_overlay_transform(hex) %>"
               />
             <% end %>
-            <% if hex.railroad_exits.any? %>
-              <path
-                class="route-overlay railroad-overlay"
-                d="<%= overlay_path_data(hex.railroad_exits) %>"
-                transform="<%= hex_overlay_transform(hex) %>"
-              />
-            <% end %>
+          <% if hex.railroad_exits.any? %>
+            <path
+              class="route-overlay railroad-bed"
+              d="<%= overlay_path_data(hex.railroad_exits) %>"
+              transform="<%= hex_overlay_transform(hex) %>"
+            />
+            <path
+              class="route-overlay railroad-rail"
+              d="<%= overlay_path_data(hex.railroad_exits) %>"
+              transform="<%= hex_overlay_transform(hex) %>"
+            />
+            <path
+              class="route-overlay railroad-ties"
+              d="<%= railroad_tie_path_data(hex.railroad_exits) %>"
+              transform="<%= hex_overlay_transform(hex) %>"
+            />
+          <% end %>
             <polygon points="<%= flat_top_hex_points(hex) %>" />
             <text
               x="<%= hex.svg_x + Map::HexGridBuilder::HEX_WIDTH / 2.0 %>"

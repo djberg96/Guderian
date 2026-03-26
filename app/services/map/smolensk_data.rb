@@ -10,9 +10,9 @@ module Map
     }.freeze
 
     RAILROAD_EXITS = {
-      "0109" => %w[southeast],
+      "0109" => %w[northwest southeast],
       "0131" => %w[northeast],
-      "0209" => %w[south],
+      "0209" => %w[northwest south],
       "0210" => %w[north southeast],
       "0228" => %w[south],
       "0229" => %w[north south],

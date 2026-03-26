@@ -201,10 +201,19 @@ body {
   stroke-width: 4;
 }
 
-.railroad-overlay {
-  stroke: #433b33;
-  stroke-width: 2.5;
-  stroke-dasharray: 2 2;
+.railroad-bed {
+  stroke: #d0b27b;
+  stroke-width: 8;
+}
+
+.railroad-rail {
+  stroke: #3f352d;
+  stroke-width: 2.2;
+}
+
+.railroad-ties {
+  stroke: #3f352d;
+  stroke-width: 1.8;
 }
 
 .counter rect {
