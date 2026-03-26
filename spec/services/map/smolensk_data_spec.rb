@@ -21,6 +21,9 @@ RSpec.describe Map::SmolenskData do
       river = HexsideFeature.find_by!(hex: Hex.find_by!(hex_number: "0112"), direction: "south", feature_type: "river")
       expect(river).to be_present
 
+      diagonal_river = HexsideFeature.find_by!(hex: Hex.find_by!(hex_number: "0113"), direction: "northeast", feature_type: "river")
+      expect(diagonal_river).to be_present
+
       second_river = HexsideFeature.find_by!(hex: Hex.find_by!(hex_number: "0120"), direction: "south", feature_type: "river")
       expect(second_river).to be_present
 

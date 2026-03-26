@@ -1,4 +1,30 @@
 <% content_for :title, "Guderian Board" %>
+<% content_for :head do %>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const shell = document.querySelector("[data-board-shell]");
+      const zoomValue = document.querySelector("[data-zoom-value]");
+
+      if (!shell || !zoomValue) return;
+
+      const applyZoom = (zoom) => {
+        shell.style.setProperty("--board-zoom", zoom);
+        zoomValue.textContent = `${Math.round(zoom * 100)}%`;
+      };
+
+      document.querySelectorAll("[data-zoom-action]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const action = button.dataset.zoomAction;
+          const currentZoom = Number.parseFloat(shell.style.getPropertyValue("--board-zoom") || "1");
+
+          if (action === "in") applyZoom(Math.min(2.5, currentZoom + 0.2));
+          if (action === "out") applyZoom(Math.max(0.4, currentZoom - 0.2));
+          if (action === "reset") applyZoom(1);
+        });
+      });
+    });
+  </script>
+<% end %>
 
 <main class="board-page">
   <section class="board-hero">
@@ -32,83 +58,102 @@
   </section>
 
   <section class="board-shell">
-    <svg
-      class="hex-board"
-      viewBox="0 0 <%= @board_metrics[:width] %> <%= @board_metrics[:height] %>"
-      role="img"
-      aria-label="Guderian hex map"
-    >
-      <% @hexes.each do |hex| %>
-        <g class="hex-cell terrain-<%= hex.terrain_type %>">
-          <image
-            href="<%= asset_href(hex.terrain_asset_path) %>"
-            x="<%= hex.svg_x %>"
-            y="<%= hex.svg_y %>"
-            width="<%= Map::HexGridBuilder::HEX_WIDTH %>"
-            height="<%= Map::HexGridBuilder::HEX_HEIGHT %>"
-            preserveAspectRatio="none"
-          />
-          <% hex.hexside_features.each do |feature| %>
+    <div class="board-controls">
+      <div class="board-zoom-controls" aria-label="Map zoom controls">
+        <button type="button" class="zoom-button" data-zoom-action="out">-</button>
+        <button type="button" class="zoom-button" data-zoom-action="reset">100%</button>
+        <button type="button" class="zoom-button" data-zoom-action="in">+</button>
+        <span class="zoom-readout" data-zoom-value>100%</span>
+      </div>
+    </div>
+
+    <div class="board-viewport" data-board-shell>
+      <svg
+        class="hex-board"
+        viewBox="0 0 <%= @board_metrics[:width] %> <%= @board_metrics[:height] %>"
+        role="img"
+        aria-label="Guderian hex map"
+      >
+        <% @hexes.each do |hex| %>
+          <g class="hex-cell terrain-<%= hex.terrain_type %>">
             <image
-              href="<%= asset_href(feature.asset_path) %>"
+              href="<%= asset_href(hex.terrain_asset_path) %>"
               x="<%= hex.svg_x %>"
               y="<%= hex.svg_y %>"
               width="<%= Map::HexGridBuilder::HEX_WIDTH %>"
               height="<%= Map::HexGridBuilder::HEX_HEIGHT %>"
               preserveAspectRatio="none"
             />
-          <% end %>
-          <% if hex.road_exits.any? %>
-            <path
-              class="route-overlay road-overlay"
-              d="<%= overlay_path_data(hex.road_exits) %>"
-              transform="<%= hex_overlay_transform(hex) %>"
-            />
-          <% end %>
-          <% if hex.railroad_exits.any? %>
-            <path
-              class="route-overlay railroad-overlay"
-              d="<%= overlay_path_data(hex.railroad_exits) %>"
-              transform="<%= hex_overlay_transform(hex) %>"
-            />
-          <% end %>
-          <polygon points="<%= flat_top_hex_points(hex) %>" />
-          <text
-            x="<%= hex.svg_x + Map::HexGridBuilder::HEX_WIDTH / 2.0 %>"
-            y="<%= hex.svg_y + Map::HexGridBuilder::HEX_HEIGHT / 2.0 + 4 %>"
-          >
-            <%= hex.label %>
-          </text>
-        </g>
-      <% end %>
+            <% hex.hexside_features.each do |feature| %>
+              <% unless feature.feature_type == "river" %>
+                <image
+                  href="<%= asset_href(feature.asset_path) %>"
+                  x="<%= hex.svg_x %>"
+                  y="<%= hex.svg_y %>"
+                  width="<%= Map::HexGridBuilder::HEX_WIDTH %>"
+                  height="<%= Map::HexGridBuilder::HEX_HEIGHT %>"
+                  preserveAspectRatio="none"
+                />
+              <% end %>
+            <% end %>
+            <% if hex.road_exits.any? %>
+              <path
+                class="route-overlay road-overlay"
+                d="<%= overlay_path_data(hex.road_exits) %>"
+                transform="<%= hex_overlay_transform(hex) %>"
+              />
+            <% end %>
+            <% if hex.railroad_exits.any? %>
+              <path
+                class="route-overlay railroad-overlay"
+                d="<%= overlay_path_data(hex.railroad_exits) %>"
+                transform="<%= hex_overlay_transform(hex) %>"
+              />
+            <% end %>
+            <polygon points="<%= flat_top_hex_points(hex) %>" />
+            <text
+              x="<%= hex.svg_x + Map::HexGridBuilder::HEX_WIDTH / 2.0 %>"
+              y="<%= hex.svg_y + Map::HexGridBuilder::HEX_HEIGHT / 2.0 + 4 %>"
+            >
+              <%= hex.label %>
+            </text>
+          </g>
+        <% end %>
 
-      <% @units.each do |unit| %>
-        <% counter = counter_position(unit) %>
-        <% counter_dimensions = counter_metrics %>
-        <g class="counter counter-<%= unit.side %>">
-          <rect
-            x="<%= counter[:x] %>"
-            y="<%= counter[:y] %>"
-            width="<%= counter_dimensions[:width] %>"
-            height="<%= counter_dimensions[:height] %>"
-            rx="<%= counter_dimensions[:corner_radius] %>"
-          />
-          <text
-            class="counter-name"
-            x="<%= counter[:x] + (counter_dimensions[:width] / 2.0) %>"
-            y="<%= counter[:y] + counter_dimensions[:name_y] %>"
-          >
-            <%= unit.name %>
-          </text>
-          <text
-            class="counter-stats"
-            x="<%= counter[:x] + (counter_dimensions[:width] / 2.0) %>"
-            y="<%= counter[:y] + counter_dimensions[:stats_y] %>"
-          >
-            <%= "#{unit.attack_strength}-#{unit.defense_strength}-#{unit.movement_allowance}" %>
-          </text>
-        </g>
-      <% end %>
-    </svg>
+        <% river_paths = river_path_data(@hexes) %>
+        <% if river_paths.present? %>
+          <path class="hexside-overlay river-edge" d="<%= river_paths %>" />
+          <path class="hexside-overlay river-edge river-edge-inner" d="<%= river_paths %>" />
+        <% end %>
+
+        <% @units.each do |unit| %>
+          <% counter = counter_position(unit) %>
+          <% counter_dimensions = counter_metrics %>
+          <g class="counter counter-<%= unit.side %>">
+            <rect
+              x="<%= counter[:x] %>"
+              y="<%= counter[:y] %>"
+              width="<%= counter_dimensions[:width] %>"
+              height="<%= counter_dimensions[:height] %>"
+              rx="<%= counter_dimensions[:corner_radius] %>"
+            />
+            <text
+              class="counter-name"
+              x="<%= counter[:x] + (counter_dimensions[:width] / 2.0) %>"
+              y="<%= counter[:y] + counter_dimensions[:name_y] %>"
+            >
+              <%= unit.name %>
+            </text>
+            <text
+              class="counter-stats"
+              x="<%= counter[:x] + (counter_dimensions[:width] / 2.0) %>"
+              y="<%= counter[:y] + counter_dimensions[:stats_y] %>"
+            >
+              <%= "#{unit.attack_strength}-#{unit.defense_strength}-#{unit.movement_allowance}" %>
+            </text>
+          </g>
+        <% end %>
+      </svg>
+    </div>
   </section>
 </main>

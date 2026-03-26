@@ -21,6 +21,7 @@ module Map
 
     HEXSIDE_FEATURES = [
       { hex_number: "0112", direction: "south", feature_type: "river" },
+      { hex_number: "0113", direction: "northeast", feature_type: "river" },
       { hex_number: "0120", direction: "south", feature_type: "river" },
       { hex_number: "0212", direction: "south", feature_type: "river" },
       { hex_number: "0219", direction: "south", feature_type: "river" }
