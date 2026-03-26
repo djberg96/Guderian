@@ -6,24 +6,24 @@ module Map
     ].freeze
 
     ROAD_EXITS = {
-      "0120" => %w[southwest]
+      "0120" => %w[northeast]
     }.freeze
 
     RAILROAD_EXITS = {
       "0109" => %w[southeast],
-      "0131" => %w[southwest],
-      "0209" => %w[northeast],
-      "0210" => %w[northeast southeast],
-      "0228" => %w[northeast],
-      "0229" => %w[southwest northeast],
-      "0230" => %w[southwest]
+      "0131" => %w[northeast],
+      "0209" => %w[south],
+      "0210" => %w[north southeast],
+      "0228" => %w[south],
+      "0229" => %w[north south],
+      "0230" => %w[north]
     }.freeze
 
     HEXSIDE_FEATURES = [
-      { hex_number: "0112", direction: "northeast", feature_type: "river" },
-      { hex_number: "0120", direction: "northeast", feature_type: "river" },
-      { hex_number: "0212", direction: "northeast", feature_type: "river" },
-      { hex_number: "0219", direction: "northeast", feature_type: "river" }
+      { hex_number: "0112", direction: "south", feature_type: "river" },
+      { hex_number: "0120", direction: "south", feature_type: "river" },
+      { hex_number: "0212", direction: "south", feature_type: "river" },
+      { hex_number: "0219", direction: "south", feature_type: "river" }
     ].freeze
 
     class << self
