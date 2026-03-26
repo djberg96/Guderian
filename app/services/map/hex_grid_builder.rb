@@ -13,6 +13,8 @@ module Map
     class << self
       def rebuild!
         Hex.transaction do
+          HexsideFeature.delete_all if defined?(HexsideFeature)
+          Unit.delete_all if defined?(Unit)
           Hex.delete_all
           Hex.insert_all!(hex_attributes, record_timestamps: true)
         end
@@ -34,12 +36,12 @@ module Map
               hex_number: format("%<row>02d%<column>02d", row: row_number, column: column_number),
               row: row_number,
               column: column_number,
-              terrain_type: terrain_type_for(row_number, column_number),
+              terrain_type: "clear",
               svg_x: svg_x_for(row_number, column_number),
               svg_y: svg_y_for(row_number),
               notes: "",
-              road_exits: road_exits_for(row_number, column_number).to_json,
-              railroad_exits: railroad_exits_for(row_number, column_number).to_json
+              road_exits: [].to_json,
+              railroad_exits: [].to_json
             }
           end
         end
@@ -53,31 +55,6 @@ module Map
 
       def svg_y_for(row_number)
         BOARD_PADDING + ((row_number - 1) * VERTICAL_STEP)
-      end
-
-      def terrain_type_for(row_number, column_number)
-        return "major_city" if [row_number, column_number] == [16, 16]
-        return "minor_city" if [[12, 11], [19, 20], [23, 24]].include?([row_number, column_number])
-        return "swamp" if row_number.between?(21, 24) && column_number.between?(8, 11)
-        return "forest" if (row_number + column_number).modulo(7).zero?
-
-        "clear"
-      end
-
-      def road_exits_for(row_number, column_number)
-        if row_number == 16 && column_number.between?(4, 25)
-          %w[north south]
-        elsif column_number == 12 && row_number.between?(8, 20)
-          %w[northeast southwest]
-        else
-          []
-        end
-      end
-
-      def railroad_exits_for(row_number, column_number)
-        return [] unless row_number == column_number && row_number.between?(6, 26)
-
-        %w[northwest southeast]
       end
     end
   end
