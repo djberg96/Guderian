@@ -1,6 +1,9 @@
 module Map
   module SmolenskData
-    FOREST_HEXES = %w[0112 0113 0117].freeze
+    FOREST_HEXES = %w[
+      0112 0113 0117
+      0202 0203 0212 0213 0217 0218 0224
+    ].freeze
 
     ROAD_EXITS = {
       "0120" => %w[southwest]
@@ -8,12 +11,19 @@ module Map
 
     RAILROAD_EXITS = {
       "0109" => %w[southeast],
-      "0131" => %w[southwest]
+      "0131" => %w[southwest],
+      "0209" => %w[northeast],
+      "0210" => %w[northeast southeast],
+      "0228" => %w[northeast],
+      "0229" => %w[southwest northeast],
+      "0230" => %w[southwest]
     }.freeze
 
     HEXSIDE_FEATURES = [
       { hex_number: "0112", direction: "northeast", feature_type: "river" },
-      { hex_number: "0120", direction: "northeast", feature_type: "river" }
+      { hex_number: "0120", direction: "northeast", feature_type: "river" },
+      { hex_number: "0212", direction: "northeast", feature_type: "river" },
+      { hex_number: "0219", direction: "northeast", feature_type: "river" }
     ].freeze
 
     class << self
