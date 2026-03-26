@@ -1,0 +1,181 @@
+:root {
+  --paper: #efe0bb;
+  --ink: #23180c;
+  --accent: #5e6d34;
+  --accent-dark: #39411f;
+  --grid: #70593d;
+  --hex-fill: #ccb98b;
+  --hex-stroke: rgba(35, 24, 12, 0.5);
+  --panel: rgba(247, 239, 220, 0.86);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.5), transparent 40%),
+    linear-gradient(180deg, #89785d 0%, #6c5d49 26%, #4a4134 100%);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.board-page {
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.board-hero {
+  max-width: 58rem;
+  margin: 0 auto 1.5rem;
+  padding: 1.5rem 1.75rem;
+  border: 1px solid rgba(35, 24, 12, 0.18);
+  border-radius: 1.25rem;
+  background: var(--panel);
+  box-shadow: 0 24px 80px rgba(19, 14, 8, 0.18);
+}
+
+.eyebrow {
+  margin: 0 0 0.35rem;
+  color: var(--accent-dark);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.board-hero h1 {
+  margin: 0;
+  font-size: clamp(2.6rem, 6vw, 5rem);
+  line-height: 0.95;
+}
+
+.board-summary {
+  max-width: 42rem;
+  margin: 0.85rem 0 0;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+.board-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0 0;
+}
+
+.board-stats div {
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(35, 24, 12, 0.15);
+}
+
+.board-stats dt {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.board-stats dd {
+  margin: 0.35rem 0 0;
+  font-size: 1.8rem;
+}
+
+.board-shell {
+  overflow: auto;
+  padding: 1rem;
+  border-radius: 1.5rem;
+  background: rgba(46, 39, 29, 0.35);
+}
+
+.hex-board {
+  display: block;
+  width: max(100%, 1100px);
+  height: auto;
+  margin: 0 auto;
+  border-radius: 1rem;
+  background:
+    linear-gradient(180deg, rgba(245, 236, 216, 0.96), rgba(219, 204, 160, 0.98));
+  box-shadow: inset 0 0 0 1px rgba(35, 24, 12, 0.18);
+}
+
+.hex-cell polygon {
+  fill: transparent;
+  stroke: var(--hex-stroke);
+  stroke-width: 1.2;
+}
+
+.hex-cell text {
+  fill: var(--grid);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-anchor: middle;
+}
+
+.route-overlay {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.road-overlay {
+  stroke: #caa869;
+  stroke-width: 4;
+}
+
+.railroad-overlay {
+  stroke: #433b33;
+  stroke-width: 2.5;
+  stroke-dasharray: 2 2;
+}
+
+.counter rect {
+  stroke-width: 1.2;
+}
+
+.counter text {
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+.counter-name {
+  font-size: 5px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.counter-stats {
+  font-size: 6px;
+  font-weight: 700;
+}
+
+.counter-german rect {
+  fill: #6b7276;
+  stroke: #20252a;
+}
+
+.counter-german text {
+  fill: #f6f3e7;
+}
+
+.counter-soviet rect {
+  fill: #8e7362;
+  stroke: #3e2920;
+}
+
+.counter-soviet text {
+  fill: #fff4e4;
+}
+
+@media (max-width: 640px) {
+  .board-page {
+    padding: 1rem;
+  }
+
+  .board-hero {
+    padding: 1.1rem;
+  }
+}

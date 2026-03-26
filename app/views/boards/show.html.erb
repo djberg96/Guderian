@@ -1,0 +1,99 @@
+<% content_for :title, "Guderian Board" %>
+
+<main class="board-page">
+  <section class="board-hero">
+    <p class="eyebrow">Smolensk 1941</p>
+    <h1>Guderian</h1>
+    <p class="board-summary">
+      The database-backed opening map. Germans are intended to be the default human side; Soviet forces will become the AI side as we layer counters, turns, and rules onto the board.
+    </p>
+    <dl class="board-stats">
+      <div>
+        <dt>Rows</dt>
+        <dd><%= Map::HexGridBuilder::ROW_COUNT %></dd>
+      </div>
+      <div>
+        <dt>Hexes per row</dt>
+        <dd><%= Map::HexGridBuilder::HEXES_PER_ROW %></dd>
+      </div>
+      <div>
+        <dt>Total hexes</dt>
+        <dd><%= @hexes.size %></dd>
+      </div>
+      <div>
+        <dt>Human Side</dt>
+        <dd><%= Scenarios::DefaultForcesBuilder.side_assignments[:human].titleize %></dd>
+      </div>
+      <div>
+        <dt>AI Side</dt>
+        <dd><%= Scenarios::DefaultForcesBuilder.side_assignments[:ai].titleize %></dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="board-shell">
+    <svg
+      class="hex-board"
+      viewBox="0 0 <%= @board_metrics[:width] %> <%= @board_metrics[:height] %>"
+      role="img"
+      aria-label="Guderian hex map"
+    >
+      <% @hexes.each do |hex| %>
+        <g class="hex-cell terrain-<%= hex.terrain_type %>">
+          <image
+            href="<%= asset_href(hex.terrain_asset_path) %>"
+            x="<%= hex.svg_x %>"
+            y="<%= hex.svg_y %>"
+            width="<%= Map::HexGridBuilder::HEX_WIDTH %>"
+            height="<%= Map::HexGridBuilder::HEX_HEIGHT %>"
+            preserveAspectRatio="none"
+          />
+          <% hex.hexside_features.each do |feature| %>
+            <image
+              href="<%= asset_href(feature.asset_path) %>"
+              x="<%= hex.svg_x %>"
+              y="<%= hex.svg_y %>"
+              width="<%= Map::HexGridBuilder::HEX_WIDTH %>"
+              height="<%= Map::HexGridBuilder::HEX_HEIGHT %>"
+              preserveAspectRatio="none"
+            />
+          <% end %>
+          <% if hex.road_exits.any? %>
+            <path
+              class="route-overlay road-overlay"
+              d="<%= overlay_path_data(hex.road_exits) %>"
+              transform="translate(<%= hex.svg_x %> <%= hex.svg_y %>)"
+            />
+          <% end %>
+          <% if hex.railroad_exits.any? %>
+            <path
+              class="route-overlay railroad-overlay"
+              d="<%= overlay_path_data(hex.railroad_exits) %>"
+              transform="translate(<%= hex.svg_x %> <%= hex.svg_y %>)"
+            />
+          <% end %>
+          <polygon points="<%= flat_top_hex_points(hex) %>" />
+          <text
+            x="<%= hex.svg_x + Map::HexGridBuilder::HEX_WIDTH / 2.0 %>"
+            y="<%= hex.svg_y + Map::HexGridBuilder::HEX_HEIGHT / 2.0 + 4 %>"
+          >
+            <%= hex.label %>
+          </text>
+        </g>
+      <% end %>
+
+      <% @units.each do |unit| %>
+        <% counter = counter_position(unit) %>
+        <g class="counter counter-<%= unit.side %>">
+          <rect x="<%= counter[:x] %>" y="<%= counter[:y] %>" width="46" height="30" rx="4" />
+          <text class="counter-name" x="<%= counter[:x] + 23 %>" y="<%= counter[:y] + 12 %>">
+            <%= unit.name %>
+          </text>
+          <text class="counter-stats" x="<%= counter[:x] + 23 %>" y="<%= counter[:y] + 24 %>">
+            <%= "#{unit.attack_strength}-#{unit.defense_strength}-#{unit.movement_allowance}" %>
+          </text>
+        </g>
+      <% end %>
+    </svg>
+  </section>
+</main>
