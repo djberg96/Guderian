@@ -1,7 +1,39 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 55.43">
-  <polygon points="16,0 48,0 64,27.71 48,55.43 16,55.43 0,27.71" fill="#c9c0a4"/>
-  <rect x="18" y="18" width="28" height="18" fill="#7f5f49"/>
-  <rect x="21" y="13" width="10" height="10" fill="#67503f"/>
-  <rect x="34" y="10" width="12" height="13" fill="#8e6d57"/>
-  <path d="M 12 40 L 52 40" stroke="#9b855f" stroke-width="3"/>
+  <defs>
+    <clipPath id="major-city-clip">
+      <polygon points="16,0 48,0 64,27.71 48,55.43 16,55.43 0,27.71"/>
+    </clipPath>
+  </defs>
+  <polygon points="16,0 48,0 64,27.71 48,55.43 16,55.43 0,27.71" fill="none"/>
+  <g clip-path="url(#major-city-clip)">
+    <g fill="#8d8d8d">
+      <rect x="14" y="15" width="5" height="4"/>
+      <rect x="21" y="14" width="7" height="5"/>
+      <rect x="31" y="15" width="4" height="4"/>
+      <rect x="38" y="14" width="6" height="5"/>
+      <rect x="46" y="15" width="4" height="4"/>
+
+      <rect x="13" y="22" width="8" height="4"/>
+      <rect x="24" y="22" width="5" height="4"/>
+      <rect x="32" y="21" width="8" height="5"/>
+      <rect x="43" y="22" width="6" height="4"/>
+
+      <rect x="15" y="29" width="5" height="5"/>
+      <rect x="22" y="30" width="9" height="4"/>
+      <rect x="34" y="29" width="5" height="5"/>
+      <rect x="42" y="30" width="7" height="4"/>
+
+      <rect x="17" y="37" width="7" height="3"/>
+      <rect x="27" y="36" width="4" height="4"/>
+      <rect x="34" y="37" width="8" height="3"/>
+    </g>
+    <g stroke="#b0b0b0" stroke-width="1">
+      <path d="M 12 20 H 52"/>
+      <path d="M 12 27.5 H 52"/>
+      <path d="M 12 35 H 52"/>
+      <path d="M 20 12 V 42"/>
+      <path d="M 30 12 V 42"/>
+      <path d="M 40 12 V 42"/>
+    </g>
+  </g>
 </svg>

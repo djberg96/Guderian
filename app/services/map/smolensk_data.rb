@@ -6,6 +6,14 @@ module Map
       0309 0312 0326
     ].freeze
 
+    TERRAIN_OVERRIDES = {
+      "0412" => "major_city",
+      "0513" => "major_city",
+      "0420" => "minor_city",
+      "0424" => "major_city",
+      "0525" => "major_city"
+    }.freeze
+
     ROAD_EXITS = {
       "0120" => %w[northwest northeast],
       "0219" => %w[southwest northeast],
@@ -70,6 +78,10 @@ module Map
 
       def apply_terrain_overrides!
         Hex.where(hex_number: FOREST_HEXES).update_all(terrain_type: "forest")
+
+        TERRAIN_OVERRIDES.each do |hex_number, terrain_type|
+          Hex.find_by!(hex_number: hex_number).update!(terrain_type:)
+        end
       end
 
       def apply_route_overrides!

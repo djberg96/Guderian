@@ -20,6 +20,11 @@ RSpec.describe Map::SmolenskData do
       expect(Hex.find_by!(hex_number: "0309").terrain_type).to eq("forest")
       expect(Hex.find_by!(hex_number: "0312").terrain_type).to eq("forest")
       expect(Hex.find_by!(hex_number: "0326").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "0412").terrain_type).to eq("major_city")
+      expect(Hex.find_by!(hex_number: "0513").terrain_type).to eq("major_city")
+      expect(Hex.find_by!(hex_number: "0420").terrain_type).to eq("minor_city")
+      expect(Hex.find_by!(hex_number: "0424").terrain_type).to eq("major_city")
+      expect(Hex.find_by!(hex_number: "0525").terrain_type).to eq("major_city")
 
       river = HexsideFeature.find_by!(hex: Hex.find_by!(hex_number: "0112"), direction: "south", feature_type: "river")
       expect(river).to be_present
