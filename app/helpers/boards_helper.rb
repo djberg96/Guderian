@@ -1,4 +1,6 @@
 module BoardsHelper
+  BASE_HEX_WIDTH = 64.0
+  BASE_HEX_HEIGHT = 55.43
   EDGE_POINTS = {
     "north" => [[16.0, 0.0], [48.0, 0.0]],
     "northeast" => [[48.0, 0.0], [64.0, 27.71]],
@@ -26,14 +28,32 @@ module BoardsHelper
   end
 
   def counter_position(unit)
+    metrics = counter_metrics
+
     {
-      x: unit.hex.svg_x + 9,
-      y: unit.hex.svg_y + 10
+      x: unit.hex.svg_x + ((Map::HexGridBuilder::HEX_WIDTH - metrics[:width]) / 2.0),
+      y: unit.hex.svg_y + ((Map::HexGridBuilder::HEX_HEIGHT - metrics[:height]) / 2.0)
     }
   end
 
   def asset_href(logical_path)
     ActionController::Base.helpers.asset_path(logical_path)
+  end
+
+  def counter_metrics
+    {
+      width: (Map::HexGridBuilder::HEX_WIDTH * 0.72).round(2),
+      height: (Map::HexGridBuilder::HEX_HEIGHT * 0.54).round(2),
+      corner_radius: (Map::HexGridBuilder::HEX_HEIGHT * 0.07).round(2),
+      name_y: (Map::HexGridBuilder::HEX_HEIGHT * 0.22).round(2),
+      stats_y: (Map::HexGridBuilder::HEX_HEIGHT * 0.42).round(2),
+      center_x: (Map::HexGridBuilder::HEX_WIDTH * 0.36).round(2)
+    }
+  end
+
+  def hex_overlay_transform(hex)
+    scale = Map::HexGridBuilder::HEX_HEIGHT / BASE_HEX_HEIGHT
+    "translate(#{hex.svg_x} #{hex.svg_y}) scale(#{format('%.5f', scale)})"
   end
 
   def overlay_path_data(directions)
