@@ -12,6 +12,8 @@
         zoomValue.textContent = `${Math.round(zoom * 100)}%`;
       };
 
+      applyZoom(1.25);
+
       document.querySelectorAll("[data-zoom-action]").forEach((button) => {
         button.addEventListener("click", () => {
           const action = button.dataset.zoomAction;
@@ -63,7 +65,7 @@
         <button type="button" class="zoom-button" data-zoom-action="out">-</button>
         <button type="button" class="zoom-button" data-zoom-action="reset">100%</button>
         <button type="button" class="zoom-button" data-zoom-action="in">+</button>
-        <span class="zoom-readout" data-zoom-value>100%</span>
+        <span class="zoom-readout" data-zoom-value>125%</span>
       </div>
     </div>
 
@@ -123,7 +125,7 @@
             <polygon points="<%= flat_top_hex_points(hex) %>" />
             <text
               x="<%= hex.svg_x + Map::HexGridBuilder::HEX_WIDTH / 2.0 %>"
-              y="<%= hex.svg_y + Map::HexGridBuilder::HEX_HEIGHT / 2.0 + 4 %>"
+              y="<%= hex.svg_y + (Map::HexGridBuilder::HEX_HEIGHT * 0.2) %>"
             >
               <%= hex.label %>
             </text>
