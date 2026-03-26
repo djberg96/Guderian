@@ -26,9 +26,10 @@ RSpec.describe "Boards", type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Guderian")
       expect(response.body).to include("0101")
-      expect(response.body).to include("7th Panzer")
       expect(response.body).to include("German")
       expect(response.body).to include("Soviet")
+      expect(response.body).to include("Map zoom controls")
+      expect(response.body).not_to include("7th Panzer")
     end
   end
 end

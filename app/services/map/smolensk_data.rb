@@ -3,28 +3,60 @@ module Map
     FOREST_HEXES = %w[
       0112 0113 0117
       0202 0203 0212 0213 0217 0218 0224
+      0309 0312 0326
     ].freeze
 
     ROAD_EXITS = {
-      "0120" => %w[northeast]
+      "0120" => %w[northwest northeast],
+      "0219" => %w[southwest northeast],
+      "0319" => %w[southwest]
     }.freeze
 
     RAILROAD_EXITS = {
+      "0112" => %w[southeast],
       "0109" => %w[northwest southeast],
       "0131" => %w[northeast],
       "0209" => %w[northwest south],
       "0210" => %w[north southeast],
-      "0228" => %w[south],
+      "0212" => %w[northwest northeast],
+      "0228" => %w[northeast south],
       "0229" => %w[north south],
-      "0230" => %w[north]
+      "0230" => %w[southwest north],
+      "0311" => %w[northwest southeast],
+      "0312" => %w[southwest],
+      "0322" => %w[south],
+      "0323" => %w[north south],
+      "0324" => %w[north south],
+      "0325" => %w[north south],
+      "0326" => %w[north south],
+      "0327" => %w[north south],
+      "0328" => %w[southwest north]
     }.freeze
 
     HEXSIDE_FEATURES = [
       { hex_number: "0112", direction: "south", feature_type: "river" },
       { hex_number: "0113", direction: "northeast", feature_type: "river" },
       { hex_number: "0120", direction: "south", feature_type: "river" },
+      { hex_number: "0120", direction: "southeast", feature_type: "river" },
       { hex_number: "0212", direction: "south", feature_type: "river" },
-      { hex_number: "0219", direction: "south", feature_type: "river" }
+      { hex_number: "0219", direction: "south", feature_type: "river" },
+      { hex_number: "0312", direction: "south", feature_type: "river" },
+      { hex_number: "0313", direction: "northwest", feature_type: "river" },
+      { hex_number: "0320", direction: "southwest", feature_type: "river" },
+      { hex_number: "0320", direction: "south", feature_type: "river" },
+      { hex_number: "0325", direction: "southeast", feature_type: "river" },
+      { hex_number: "0326", direction: "southeast", feature_type: "river" },
+      { hex_number: "0326", direction: "northeast", feature_type: "river" },
+      { hex_number: "0327", direction: "southeast", feature_type: "river" },
+      { hex_number: "0327", direction: "northeast", feature_type: "river" },
+      { hex_number: "0328", direction: "southeast", feature_type: "river" },
+      { hex_number: "0328", direction: "northeast", feature_type: "river" },
+      { hex_number: "0329", direction: "southeast", feature_type: "river" },
+      { hex_number: "0329", direction: "northeast", feature_type: "river" },
+      { hex_number: "0330", direction: "southeast", feature_type: "river" },
+      { hex_number: "0330", direction: "northeast", feature_type: "river" },
+      { hex_number: "0331", direction: "southeast", feature_type: "river" },
+      { hex_number: "0331", direction: "northeast", feature_type: "river" }
     ].freeze
 
     class << self
