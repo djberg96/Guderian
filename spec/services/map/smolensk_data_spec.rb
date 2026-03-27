@@ -39,12 +39,17 @@ RSpec.describe Map::SmolenskData do
       expect(Hex.find_by!(hex_number: "0518").terrain_type).to eq("forest")
       expect(Hex.find_by!(hex_number: "0527").terrain_type).to eq("forest")
       expect(Hex.find_by!(hex_number: "0528").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "0606").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "0617").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "0628").terrain_type).to eq("forest")
       expect(Hex.find_by!(hex_number: "0407").terrain_type).to eq("clear")
       expect(Hex.find_by!(hex_number: "0412").terrain_type).to eq("major_city")
       expect(Hex.find_by!(hex_number: "0513").terrain_type).to eq("major_city")
       expect(Hex.find_by!(hex_number: "0420").terrain_type).to eq("minor_city")
       expect(Hex.find_by!(hex_number: "0424").terrain_type).to eq("major_city")
       expect(Hex.find_by!(hex_number: "0525").terrain_type).to eq("major_city")
+      expect(Hex.find_by!(hex_number: "0602").terrain_type).to eq("lake")
+      expect(Hex.find_by!(hex_number: "0615").terrain_type).to eq("swamp")
 
       river = HexsideFeature.find_by!(hex: Hex.find_by!(hex_number: "0112"), direction: "south", feature_type: "river")
       expect(river).to be_present

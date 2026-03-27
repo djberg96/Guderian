@@ -6,6 +6,7 @@ module Map
       0309 0312 0326
       0405 0406 0408 0409 0417 0422 0426 0427
       0505 0506 0507 0509 0512 0514 0515 0517 0518 0527 0528
+      0606 0617 0628
     ].freeze
 
     TERRAIN_OVERRIDES = {
@@ -13,7 +14,9 @@ module Map
       "0513" => "major_city",
       "0420" => "minor_city",
       "0424" => "major_city",
-      "0525" => "major_city"
+      "0525" => "major_city",
+      "0602" => "lake",
+      "0615" => "swamp"
     }.freeze
 
     ROAD_EXITS = {
