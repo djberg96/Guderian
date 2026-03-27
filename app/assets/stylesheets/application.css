@@ -30,11 +30,38 @@ body {
 .board-hero {
   max-width: 58rem;
   margin: 0 auto 1.5rem;
-  padding: 1.5rem 1.75rem;
   border: 1px solid rgba(35, 24, 12, 0.18);
   border-radius: 1.25rem;
   background: var(--panel);
   box-shadow: 0 24px 80px rgba(19, 14, 8, 0.18);
+}
+
+.board-hero-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  font-weight: 700;
+  list-style: none;
+}
+
+.board-hero-toggle::-webkit-details-marker {
+  display: none;
+}
+
+.board-hero-toggle::after {
+  content: "+";
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.board-hero[open] .board-hero-toggle::after {
+  content: "-";
+}
+
+.board-hero-content {
+  padding: 0 1.75rem 1.5rem;
 }
 
 .eyebrow {

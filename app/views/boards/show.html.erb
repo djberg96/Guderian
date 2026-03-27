@@ -29,35 +29,38 @@
 <% end %>
 
 <main class="board-page">
-  <section class="board-hero">
-    <p class="eyebrow">Smolensk 1941</p>
-    <h1>Guderian</h1>
-    <p class="board-summary">
-      The database-backed opening map. Germans are intended to be the default human side; Soviet forces will become the AI side as we layer counters, turns, and rules onto the board.
-    </p>
-    <dl class="board-stats">
-      <div>
-        <dt>Columns</dt>
-        <dd><%= Map::HexGridBuilder::COLUMN_COUNT %></dd>
-      </div>
-      <div>
-        <dt>Rows</dt>
-        <dd><%= Map::HexGridBuilder::ROW_COUNT %></dd>
-      </div>
-      <div>
-        <dt>Total hexes</dt>
-        <dd><%= @hexes.size %></dd>
-      </div>
-      <div>
-        <dt>Human Side</dt>
-        <dd><%= Scenarios::DefaultForcesBuilder.side_assignments[:human].titleize %></dd>
-      </div>
-      <div>
-        <dt>AI Side</dt>
-        <dd><%= Scenarios::DefaultForcesBuilder.side_assignments[:ai].titleize %></dd>
-      </div>
-    </dl>
-  </section>
+  <details class="board-hero">
+    <summary class="board-hero-toggle">Show Scenario Header</summary>
+    <div class="board-hero-content">
+      <p class="eyebrow">Smolensk 1941</p>
+      <h1>Guderian</h1>
+      <p class="board-summary">
+        The database-backed opening map. Germans are intended to be the default human side; Soviet forces will become the AI side as we layer counters, turns, and rules onto the board.
+      </p>
+      <dl class="board-stats">
+        <div>
+          <dt>Columns</dt>
+          <dd><%= Map::HexGridBuilder::COLUMN_COUNT %></dd>
+        </div>
+        <div>
+          <dt>Rows</dt>
+          <dd><%= Map::HexGridBuilder::ROW_COUNT %></dd>
+        </div>
+        <div>
+          <dt>Total hexes</dt>
+          <dd><%= @hexes.size %></dd>
+        </div>
+        <div>
+          <dt>Human Side</dt>
+          <dd><%= Scenarios::DefaultForcesBuilder.side_assignments[:human].titleize %></dd>
+        </div>
+        <div>
+          <dt>AI Side</dt>
+          <dd><%= Scenarios::DefaultForcesBuilder.side_assignments[:ai].titleize %></dd>
+        </div>
+      </dl>
+    </div>
+  </details>
 
   <section class="board-shell">
     <div class="board-controls">
