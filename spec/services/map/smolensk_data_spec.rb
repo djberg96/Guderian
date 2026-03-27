@@ -167,6 +167,84 @@ RSpec.describe Map::SmolenskData do
         expect(lake_edge).to be_present
       end
 
+      expect(
+        HexsideFeature.find_by!(
+          hex: Hex.find_by!(hex_number: "0701"),
+          direction: "southeast",
+          feature_type: "river"
+        )
+      ).to be_present
+      expect(
+        HexsideFeature.find_by!(
+          hex: Hex.find_by!(hex_number: "0702"),
+          direction: "northeast",
+          feature_type: "river"
+        )
+      ).to be_present
+      expect(
+        HexsideFeature.find_by!(
+          hex: Hex.find_by!(hex_number: "0801"),
+          direction: "south",
+          feature_type: "river"
+        )
+      ).to be_present
+      expect(
+        HexsideFeature.find_by!(
+          hex: Hex.find_by!(hex_number: "0802"),
+          direction: "northeast",
+          feature_type: "river"
+        )
+      ).to be_present
+      expect(
+        HexsideFeature.find_by!(
+          hex: Hex.find_by!(hex_number: "0802"),
+          direction: "southeast",
+          feature_type: "river"
+        )
+      ).to be_present
+      expect(
+        HexsideFeature.find_by!(
+          hex: Hex.find_by!(hex_number: "0803"),
+          direction: "northeast",
+          feature_type: "river"
+        )
+      ).to be_present
+      expect(
+        HexsideFeature.find_by!(
+          hex: Hex.find_by!(hex_number: "0803"),
+          direction: "southeast",
+          feature_type: "river"
+        )
+      ).to be_present
+      expect(
+        HexsideFeature.find_by!(
+          hex: Hex.find_by!(hex_number: "0803"),
+          direction: "south",
+          feature_type: "river"
+        )
+      ).to be_present
+      expect(
+        HexsideFeature.find_by!(
+          hex: Hex.find_by!(hex_number: "0704"),
+          direction: "southeast",
+          feature_type: "river"
+        )
+      ).to be_present
+      expect(
+        HexsideFeature.find_by!(
+          hex: Hex.find_by!(hex_number: "0705"),
+          direction: "northeast",
+          feature_type: "river"
+        )
+      ).to be_present
+      expect(
+        HexsideFeature.find_by!(
+          hex: Hex.find_by!(hex_number: "0705"),
+          direction: "southeast",
+          feature_type: "river"
+        )
+      ).to be_present
+
       expect(Hex.find_by!(hex_number: "0501").road_exits).to eq(%w[northwest southeast])
       expect(Hex.find_by!(hex_number: "0601").road_exits).to eq(%w[northwest southeast])
       expect(Hex.find_by!(hex_number: "0702").road_exits).to eq(%w[northwest south])
