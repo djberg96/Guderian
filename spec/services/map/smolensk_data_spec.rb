@@ -132,6 +132,38 @@ RSpec.describe Map::SmolenskData do
         ).to be_present
       end
 
+      [
+        %w[0811 northeast],
+        %w[0911 south],
+        %w[0912 northeast],
+        %w[1011 south],
+        %w[1011 southeast],
+        %w[1111 south],
+        %w[1111 southeast],
+        %w[1210 south],
+        %w[1211 northeast],
+        %w[1311 south],
+        %w[1312 northeast],
+        %w[1411 south],
+        %w[1412 northeast],
+        %w[1512 south],
+        %w[1512 southeast],
+        %w[1611 south],
+        %w[1611 southeast],
+        %w[1513 northeast],
+        %w[1513 southeast],
+        %w[1514 northeast],
+        %w[1514 southeast]
+      ].each do |hex_number, direction|
+        expect(
+          HexsideFeature.find_by!(
+            hex: Hex.find_by!(hex_number: hex_number),
+            direction: direction,
+            feature_type: "river"
+          )
+        ).to be_present
+      end
+
       southwest_river = HexsideFeature.find_by!(
         hex: Hex.find_by!(hex_number: "0320"),
         direction: "southwest",
