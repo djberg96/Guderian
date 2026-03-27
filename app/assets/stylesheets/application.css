@@ -203,6 +203,12 @@ body {
   stroke-width: 11;
 }
 
+.river-edge-variation {
+  stroke: rgba(103, 154, 171, 0.55);
+  stroke-width: 14;
+  stroke-dasharray: 28 40;
+}
+
 .river-edge-inner {
   stroke: #78a9bc;
   stroke-width: 6;

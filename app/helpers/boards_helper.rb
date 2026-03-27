@@ -59,7 +59,7 @@ module BoardsHelper
   def river_path_data(hexes)
     river_features = hexes.flat_map(&:hexside_features).select { |feature| feature.feature_type == "river" }
     chains = merge_feature_segments(river_features.map { |feature| global_segment_points(feature) })
-    chains.map { |points| build_polyline_path(points) }.join(" ")
+    chains.map { |points| build_flow_path(points) }.join(" ")
   end
 
   def lake_path_data(hexes)
@@ -412,6 +412,46 @@ module BoardsHelper
     move = format("M %.2f %.2f", first_point[0], first_point[1])
     lines = remaining_points.map { |point| format("L %.2f %.2f", point[0], point[1]) }
     ([move] + lines).join(" ")
+  end
+
+  def build_flow_path(points)
+    return build_polyline_path(points) if points.length < 3
+
+    path = [format("M %.2f %.2f", points.first[0], points.first[1])]
+
+    points.each_cons(3).with_index do |(previous_point, current_point, next_point), index|
+      control_point = flow_control_point(previous_point, current_point, next_point, index)
+      midpoint = [
+        ((current_point[0] + next_point[0]) / 2.0).round(2),
+        ((current_point[1] + next_point[1]) / 2.0).round(2)
+      ]
+
+      if index.zero?
+        first_midpoint = [
+          ((previous_point[0] + current_point[0]) / 2.0).round(2),
+          ((previous_point[1] + current_point[1]) / 2.0).round(2)
+        ]
+        path << format("Q %.2f %.2f %.2f %.2f", control_point[0], control_point[1], first_midpoint[0], first_midpoint[1])
+      end
+
+      path << format("Q %.2f %.2f %.2f %.2f", control_point[0], control_point[1], midpoint[0], midpoint[1])
+    end
+
+    penultimate = points[-2]
+    last_point = points[-1]
+    path << format("L %.2f %.2f", last_point[0], last_point[1]) if penultimate != last_point
+    path.join(" ")
+  end
+
+  def flow_control_point(previous_point, current_point, next_point, index)
+    bend_x = ((next_point[0] - previous_point[0]) * 0.18)
+    bend_y = ((next_point[1] - previous_point[1]) * 0.18)
+    sway = index.even? ? 1.0 : -1.0
+
+    [
+      (current_point[0] + (bend_y * 0.12 * sway)).round(2),
+      (current_point[1] - (bend_x * 0.12 * sway)).round(2)
+    ]
   end
 
   def point_key(point)

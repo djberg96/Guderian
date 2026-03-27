@@ -129,6 +129,7 @@
         <% river_paths = river_path_data(@hexes) %>
         <% if river_paths.present? %>
           <path class="hexside-overlay river-edge" d="<%= river_paths %>" />
+          <path class="hexside-overlay river-edge river-edge-variation" d="<%= river_paths %>" />
           <path class="hexside-overlay river-edge river-edge-inner" d="<%= river_paths %>" />
         <% end %>
 
