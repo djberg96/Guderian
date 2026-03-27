@@ -120,6 +120,20 @@ RSpec.describe Map::SmolenskData do
         expect(east_bank_river).to be_present
       end
 
+      expect(Hex.find_by!(hex_number: "0501").road_exits).to eq(%w[northwest southeast])
+      expect(Hex.find_by!(hex_number: "0601").road_exits).to eq(%w[northwest southeast])
+      expect(Hex.find_by!(hex_number: "0702").road_exits).to eq(%w[northwest south])
+      expect(Hex.find_by!(hex_number: "0703").road_exits).to eq(%w[north south])
+      expect(Hex.find_by!(hex_number: "0704").road_exits).to eq(%w[north south])
+      expect(Hex.find_by!(hex_number: "0705").road_exits).to eq(%w[north south])
+      expect(Hex.find_by!(hex_number: "0706").road_exits).to eq(%w[north northeast])
+      expect(Hex.find_by!(hex_number: "0805").road_exits).to eq(%w[southwest southeast])
+      expect(Hex.find_by!(hex_number: "0906").road_exits).to eq(%w[northwest southeast])
+      expect(Hex.find_by!(hex_number: "1006").road_exits).to eq(%w[northwest southeast])
+      expect(Hex.find_by!(hex_number: "1107").road_exits).to eq(%w[northwest southeast])
+      expect(Hex.find_by!(hex_number: "1207").road_exits).to eq(%w[northwest southeast])
+      expect(Hex.find_by!(hex_number: "1308").road_exits).to eq(%w[northwest southeast])
+      expect(Hex.find_by!(hex_number: "1408").road_exits).to eq(%w[northwest])
       expect(Hex.find_by!(hex_number: "0120").road_exits).to eq(%w[northwest northeast])
       expect(Hex.find_by!(hex_number: "0219").road_exits).to eq(%w[southwest northeast])
       expect(Hex.find_by!(hex_number: "0319").road_exits).to eq(%w[southwest])

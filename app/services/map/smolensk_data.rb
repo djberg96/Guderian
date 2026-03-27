@@ -20,6 +20,20 @@ module Map
     }.freeze
 
     ROAD_EXITS = {
+      "0501" => %w[northwest southeast],
+      "0601" => %w[northwest southeast],
+      "0702" => %w[northwest south],
+      "0703" => %w[north south],
+      "0704" => %w[north south],
+      "0705" => %w[north south],
+      "0706" => %w[north northeast],
+      "0805" => %w[southwest southeast],
+      "0906" => %w[northwest southeast],
+      "1006" => %w[northwest southeast],
+      "1107" => %w[northwest southeast],
+      "1207" => %w[northwest southeast],
+      "1308" => %w[northwest southeast],
+      "1408" => %w[northwest],
       "0120" => %w[northwest northeast],
       "0219" => %w[southwest northeast],
       "0319" => %w[southwest]
