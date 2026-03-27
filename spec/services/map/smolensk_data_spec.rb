@@ -190,6 +190,25 @@ RSpec.describe Map::SmolenskData do
         expect(lake_edge).to be_present
       end
 
+      expect(Hex.find_by!(hex_number: "1502").terrain_type).to eq("clear")
+
+      %w[north northeast southeast south southwest northwest].each do |direction|
+        lake_edge = HexsideFeature.find_by!(
+          hex: Hex.find_by!(hex_number: "1502"),
+          direction: direction,
+          feature_type: "lake"
+        )
+        expect(lake_edge).to be_present
+      end
+
+      expect(
+        HexsideFeature.find_by!(
+          hex: Hex.find_by!(hex_number: "0907"),
+          direction: "northeast",
+          feature_type: "lake"
+        )
+      ).to be_present
+
       expect(
         HexsideFeature.find_by!(
           hex: Hex.find_by!(hex_number: "0701"),
@@ -268,6 +287,60 @@ RSpec.describe Map::SmolenskData do
         )
       ).to be_present
 
+      [
+        %w[1601 south],
+        %w[1602 northeast],
+        %w[1702 south],
+        %w[1602 southeast],
+        %w[1603 northeast],
+        %w[1703 south],
+        %w[1704 northeast],
+        %w[1704 southeast],
+        %w[1705 northeast],
+        %w[1705 southeast],
+        %w[1706 northeast],
+        %w[1706 southeast],
+        %w[1707 northeast],
+        %w[1707 south],
+        %w[1707 southeast],
+        %w[1607 northeast],
+        %w[1606 south],
+        %w[1507 southeast],
+        %w[1507 south],
+        %w[1407 southeast],
+        %w[1408 northeast],
+        %w[1408 southeast],
+        %w[1408 south],
+        %w[1309 northeast],
+        %w[1308 south],
+        %w[1208 southeast],
+        %w[1208 south],
+        %w[1109 southeast],
+        %w[1109 south],
+        %w[1009 southeast],
+        %w[1009 south],
+        %w[0910 southeast],
+        %w[0910 south],
+        %w[0810 northeast],
+        %w[0809 southeast],
+        %w[0909 south],
+        %w[0909 southeast],
+        %w[1008 south],
+        %w[1008 southeast],
+        %w[1008 northeast],
+        %w[1007 south],
+        %w[0908 northeast],
+        %w[0907 southeast]
+      ].each do |hex_number, direction|
+        expect(
+          HexsideFeature.find_by!(
+            hex: Hex.find_by!(hex_number: hex_number),
+            direction: direction,
+            feature_type: "river"
+          )
+        ).to be_present
+      end
+
       expect(Hex.find_by!(hex_number: "0501").road_exits).to eq(%w[northwest southeast])
       expect(Hex.find_by!(hex_number: "0601").road_exits).to eq(%w[northwest southeast])
       expect(Hex.find_by!(hex_number: "0702").road_exits).to eq(%w[northwest south])
@@ -325,11 +398,15 @@ RSpec.describe Map::SmolenskData do
       expect(Hex.find_by!(hex_number: "0513").railroad_exits).to eq(%w[northwest southeast])
       expect(Hex.find_by!(hex_number: "0519").railroad_exits).to eq(%w[southwest northeast])
       expect(Hex.find_by!(hex_number: "0613").railroad_exits).to eq(%w[northwest southeast])
-      expect(Hex.find_by!(hex_number: "0618").railroad_exits).to eq(%w[southwest])
+      expect(Hex.find_by!(hex_number: "0618").railroad_exits).to eq(%w[southwest northeast])
       expect(Hex.find_by!(hex_number: "0714").railroad_exits).to eq(%w[northwest southeast])
+      expect(Hex.find_by!(hex_number: "0718").railroad_exits).to eq(%w[southwest northeast])
       expect(Hex.find_by!(hex_number: "0814").railroad_exits).to eq(%w[northwest southeast])
+      expect(Hex.find_by!(hex_number: "0817").railroad_exits).to eq(%w[southwest northeast])
       expect(Hex.find_by!(hex_number: "0915").railroad_exits).to eq(%w[northwest southeast])
+      expect(Hex.find_by!(hex_number: "0917").railroad_exits).to eq(%w[southwest northeast])
       expect(Hex.find_by!(hex_number: "1015").railroad_exits).to eq(%w[northwest])
+      expect(Hex.find_by!(hex_number: "1016").railroad_exits).to eq(%w[southwest])
     end
   end
 end

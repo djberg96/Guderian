@@ -12,7 +12,7 @@
         zoomValue.textContent = `${Math.round(zoom * 100)}%`;
       };
 
-      applyZoom(1.25);
+      applyZoom(1.5);
 
       document.querySelectorAll("[data-zoom-action]").forEach((button) => {
         button.addEventListener("click", () => {
@@ -68,7 +68,7 @@
         <button type="button" class="zoom-button" data-zoom-action="out">-</button>
         <button type="button" class="zoom-button" data-zoom-action="reset">100%</button>
         <button type="button" class="zoom-button" data-zoom-action="in">+</button>
-        <span class="zoom-readout" data-zoom-value>125%</span>
+        <span class="zoom-readout" data-zoom-value>150%</span>
       </div>
     </div>
 
@@ -92,31 +92,31 @@
             <% if full_lake_hex?(hex) %>
               <polygon class="lake-fill" points="<%= flat_top_hex_points(hex) %>" />
             <% end %>
+            <polygon points="<%= flat_top_hex_points(hex) %>" />
             <% if hex.road_exits.any? %>
               <path
                 class="route-overlay road-overlay"
-                d="<%= overlay_path_data(hex.road_exits) %>"
+                d="<%= overlay_path_data(hex, hex.road_exits, lateral_offset: route_lateral_offset(hex, :road), route_style: :road) %>"
                 transform="<%= hex_overlay_transform(hex) %>"
               />
             <% end %>
           <% if hex.railroad_exits.any? %>
             <path
               class="route-overlay railroad-bed"
-              d="<%= overlay_path_data(hex.railroad_exits) %>"
+              d="<%= overlay_path_data(hex, hex.railroad_exits, lateral_offset: route_lateral_offset(hex, :railroad), route_style: :railroad) %>"
               transform="<%= hex_overlay_transform(hex) %>"
             />
             <path
               class="route-overlay railroad-rail"
-              d="<%= overlay_path_data(hex.railroad_exits) %>"
+              d="<%= overlay_path_data(hex, hex.railroad_exits, lateral_offset: route_lateral_offset(hex, :railroad), route_style: :railroad) %>"
               transform="<%= hex_overlay_transform(hex) %>"
             />
-            <path
-              class="route-overlay railroad-ties"
-              d="<%= railroad_tie_path_data(hex.railroad_exits) %>"
-              transform="<%= hex_overlay_transform(hex) %>"
-            />
+              <path
+                class="route-overlay railroad-ties"
+                d="<%= railroad_tie_path_data(hex, hex.railroad_exits, lateral_offset: route_lateral_offset(hex, :railroad)) %>"
+                transform="<%= hex_overlay_transform(hex) %>"
+              />
           <% end %>
-            <polygon points="<%= flat_top_hex_points(hex) %>" />
             <text
               x="<%= hex.svg_x + Map::HexGridBuilder::HEX_WIDTH / 2.0 %>"
               y="<%= hex.svg_y + (Map::HexGridBuilder::HEX_HEIGHT * 0.2) %>"

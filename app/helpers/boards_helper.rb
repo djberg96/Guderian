@@ -73,34 +73,245 @@ module BoardsHelper
     lake_directions == Hex::EDGE_DIRECTIONS.sort
   end
 
-  def overlay_path_data(directions)
-    points = Array(directions).filter_map { |direction| EDGE_POINTS[direction.to_s] }
-    center = [32.0, 27.71]
+  def overlay_path_data(hex, directions, lateral_offset: 0.0, route_style: :generic)
+    direction_list = Array(directions).map(&:to_s)
+    special_path = special_route_path(hex, direction_list, lateral_offset:, route_style:)
+    return special_path if special_path.present?
 
-    points.map do |(start_point, end_point)|
-      midpoint = [
-        ((start_point[0] + end_point[0]) / 2.0).round(2),
-        ((start_point[1] + end_point[1]) / 2.0).round(2)
-      ]
-      "M #{center[0]} #{center[1]} L #{midpoint[0]} #{midpoint[1]}"
+    if direction_list.length == 2
+      return through_route_path(direction_list, lateral_offset:, route_style:)
+    end
+
+    direction_list.filter_map do |direction|
+      start_point, midpoint = route_segment_points(direction, lateral_offset:)
+      next unless start_point && midpoint
+
+      format("M %.2f %.2f L %.2f %.2f", start_point[0], start_point[1], midpoint[0], midpoint[1])
     end.join(" ")
   end
 
-  def railroad_tie_path_data(directions)
-    points = Array(directions).filter_map { |direction| EDGE_POINTS[direction.to_s] }
-    center = [32.0, 27.71]
+  def railroad_tie_path_data(hex, directions, lateral_offset: 0.0)
+    direction_list = Array(directions).map(&:to_s)
+    special_ties = special_railroad_ties(hex, direction_list, lateral_offset:)
+    return special_ties if special_ties.present?
 
-    points.flat_map do |(start_point, end_point)|
-      midpoint = [
-        ((start_point[0] + end_point[0]) / 2.0).round(2),
-        ((start_point[1] + end_point[1]) / 2.0).round(2)
-      ]
+    return through_route_ties(direction_list, lateral_offset:) if direction_list.length == 2
 
-      tie_segments(center, midpoint)
+    direction_list.flat_map do |direction|
+      start_point, midpoint = route_segment_points(direction, lateral_offset:)
+      next [] unless start_point && midpoint
+
+      tie_segments(start_point, midpoint)
     end.join(" ")
+  end
+
+  def route_lateral_offset(hex, feature_type)
+    return 0.0 unless shared_route_lane?(hex)
+
+    feature_type.to_s == "road" ? -4.0 : 4.0
   end
 
   private
+
+  def special_route_path(hex, directions, lateral_offset:, route_style:)
+    if route_style.to_sym == :railroad && hex.hex_number == "0618" && directions.sort == %w[northeast southwest]
+      start_point = route_midpoint("southwest")
+      end_point = transition_shifted_endpoint("southwest", "northeast", lateral_offset:)
+      control_point = transition_control_point("southwest", "northeast", lateral_offset:, center_bias: 0.8)
+
+      return format(
+        "M %.2f %.2f Q %.2f %.2f %.2f %.2f",
+        start_point[0], start_point[1],
+        control_point[0], control_point[1],
+        end_point[0], end_point[1]
+      )
+    end
+
+    if route_style.to_sym == :road && hex.hex_number == "0617" && directions.sort == %w[southeast southwest]
+      start_point = route_midpoint("southwest")
+      end_point = transition_shifted_endpoint("southwest", "southeast", lateral_offset:)
+      control_point = transition_control_point("southwest", "southeast", lateral_offset:, center_bias: 1.15)
+
+      return format(
+        "M %.2f %.2f Q %.2f %.2f %.2f %.2f",
+        start_point[0], start_point[1],
+        control_point[0], control_point[1],
+        end_point[0], end_point[1]
+      )
+    end
+
+    nil
+  end
+
+  def special_railroad_ties(hex, directions, lateral_offset:)
+    return unless hex.hex_number == "0618"
+    return unless directions.sort == %w[northeast southwest]
+
+    start_point = route_midpoint("southwest")
+    end_point = transition_shifted_endpoint("southwest", "northeast", lateral_offset:)
+    tie_segments(start_point, end_point).join(" ")
+  end
+
+  def shared_route_lane?(hex)
+    road_vector = route_axis_vector(hex.road_exits)
+    rail_vector = route_axis_vector(hex.railroad_exits)
+    return false unless road_vector && rail_vector
+
+    angle = angle_between_vectors(road_vector, rail_vector)
+    angle <= 40.0
+  end
+
+  def route_axis_vector(directions)
+    direction_list = Array(directions).map(&:to_s)
+    return nil if direction_list.empty?
+
+    if direction_list.length == 1
+      midpoint = route_midpoint(direction_list.first)
+      return nil unless midpoint
+
+      center = [32.0, 27.71]
+      return [midpoint[0] - center[0], midpoint[1] - center[1]]
+    end
+
+    midpoints = direction_list.filter_map { |direction| route_midpoint(direction) }
+    return nil unless midpoints.length >= 2
+
+    [midpoints.last[0] - midpoints.first[0], midpoints.last[1] - midpoints.first[1]]
+  end
+
+  def angle_between_vectors(first_vector, second_vector)
+    first_length = Math.sqrt((first_vector[0]**2) + (first_vector[1]**2))
+    second_length = Math.sqrt((second_vector[0]**2) + (second_vector[1]**2))
+    return 180.0 if first_length.zero? || second_length.zero?
+
+    dot_product = (first_vector[0] * second_vector[0]) + (first_vector[1] * second_vector[1])
+    cosine = dot_product / (first_length * second_length)
+    cosine = [[cosine, -1.0].max, 1.0].min
+    radians = Math.acos(cosine)
+    degrees = radians * (180.0 / Math::PI)
+    [degrees, 180.0 - degrees].min
+  end
+
+  OPPOSITE_DIRECTION_PAIRS = [
+    %w[north south],
+    %w[northeast southwest],
+    %w[northwest southeast]
+  ].map(&:sort).freeze
+
+  def through_route_path(directions, lateral_offset:, route_style:)
+    midpoints = directions.filter_map { |direction| route_midpoint(direction) }
+    return "" unless midpoints.length == 2
+
+    if route_style.to_sym == :road && !opposite_directions?(directions)
+      start_point, end_point = apply_line_offset(midpoints[0], midpoints[1], lateral_offset)
+      control_point = bend_control_point(directions, lateral_offset:)
+      return format(
+        "M %.2f %.2f Q %.2f %.2f %.2f %.2f",
+        start_point[0], start_point[1],
+        control_point[0], control_point[1],
+        end_point[0], end_point[1]
+      )
+    end
+
+    start_point, end_point = apply_line_offset(midpoints[0], midpoints[1], lateral_offset)
+    format("M %.2f %.2f L %.2f %.2f", start_point[0], start_point[1], end_point[0], end_point[1])
+  end
+
+  def through_route_ties(directions, lateral_offset:)
+    midpoints = directions.filter_map { |direction| route_midpoint(direction) }
+    return "" unless midpoints.length == 2
+
+    start_point, end_point = apply_line_offset(midpoints[0], midpoints[1], lateral_offset)
+    tie_segments(start_point, end_point).join(" ")
+  end
+
+  def route_segment_points(direction, lateral_offset: 0.0)
+    edge = EDGE_POINTS[direction.to_s]
+    return unless edge
+
+    start_point, end_point = edge
+    center = [32.0, 27.71]
+    midpoint = route_midpoint(direction)
+
+    return [center, midpoint] if lateral_offset.zero?
+
+    shift = perpendicular_offset(midpoint, center, lateral_offset)
+    [
+      [(center[0] + shift[0]).round(2), (center[1] + shift[1]).round(2)],
+      [(midpoint[0] + shift[0]).round(2), (midpoint[1] + shift[1]).round(2)]
+    ]
+  end
+
+  def route_midpoint(direction)
+    start_point, end_point = EDGE_POINTS.fetch(direction.to_s)
+
+    [
+      (start_point[0] + end_point[0]) / 2.0,
+      (start_point[1] + end_point[1]) / 2.0
+    ]
+  rescue KeyError
+    nil
+  end
+
+  def perpendicular_offset(start_point, end_point, distance)
+    dx = end_point[0] - start_point[0]
+    dy = end_point[1] - start_point[1]
+    length = Math.sqrt((dx**2) + (dy**2))
+    return [0.0, 0.0] if length.zero?
+
+    normal_x = -dy / length
+    normal_y = dx / length
+    [normal_x * distance, normal_y * distance]
+  end
+
+  def apply_line_offset(start_point, end_point, distance)
+    return [start_point, end_point] if distance.zero?
+
+    shift_x, shift_y = perpendicular_offset(start_point, end_point, distance)
+    [
+      [(start_point[0] + shift_x).round(2), (start_point[1] + shift_y).round(2)],
+      [(end_point[0] + shift_x).round(2), (end_point[1] + shift_y).round(2)]
+    ]
+  end
+
+  def opposite_directions?(directions)
+    OPPOSITE_DIRECTION_PAIRS.include?(Array(directions).map(&:to_s).sort)
+  end
+
+  def bend_control_point(directions, lateral_offset:)
+    center = [32.0, 27.71]
+    shifts = Array(directions).filter_map do |direction|
+      midpoint = route_midpoint(direction)
+      next unless midpoint
+
+      perpendicular_offset(midpoint, center, lateral_offset)
+    end
+
+    return center if shifts.empty?
+
+    avg_x = shifts.sum { |shift| shift[0] } / shifts.length.to_f
+    avg_y = shifts.sum { |shift| shift[1] } / shifts.length.to_f
+    [(center[0] + avg_x).round(2), (center[1] + avg_y).round(2)]
+  end
+
+  def transition_shifted_endpoint(start_direction, end_direction, lateral_offset:)
+    start_point = route_midpoint(start_direction)
+    end_point = route_midpoint(end_direction)
+    _, shifted_end = apply_line_offset(start_point, end_point, lateral_offset)
+    shifted_end
+  end
+
+  def transition_control_point(start_direction, end_direction, lateral_offset:, center_bias:)
+    center = [32.0, 27.71]
+    start_point = route_midpoint(start_direction)
+    end_point = route_midpoint(end_direction)
+    shift_x, shift_y = perpendicular_offset(start_point, end_point, lateral_offset)
+
+    [
+      (center[0] + (shift_x * center_bias)).round(2),
+      (center[1] + (shift_y * center_bias)).round(2)
+    ]
+  end
 
   def tie_segments(start_point, end_point)
     dx = end_point[0] - start_point[0]
