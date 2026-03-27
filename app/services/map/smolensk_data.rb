@@ -7,6 +7,10 @@ module Map
       0405 0406 0408 0409 0417 0422 0426 0427
       0505 0506 0507 0509 0512 0514 0515 0517 0518 0527 0528
       0606 0617 0628
+      0710 0810 0816 0817 0917
+      0801 0901 0902
+      1009 1109 1208
+      1104 1105 1106 1203 1204 1205 1206 1304 1305
     ].freeze
 
     TERRAIN_OVERRIDES = {
@@ -15,6 +19,9 @@ module Map
       "0420" => "minor_city",
       "0424" => "major_city",
       "0525" => "major_city",
+      "0802" => "swamp",
+      "1006" => "swamp",
+      "1107" => "swamp",
       "0615" => "swamp"
     }.freeze
 
@@ -35,7 +42,14 @@ module Map
       "1408" => %w[northwest],
       "0120" => %w[northwest northeast],
       "0219" => %w[southwest northeast],
-      "0319" => %w[southwest]
+      "0319" => %w[southwest northeast],
+      "0418" => %w[southwest northeast],
+      "0518" => %w[southwest northeast],
+      "0617" => %w[southwest southeast],
+      "0718" => %w[northwest northeast],
+      "0817" => %w[southwest northeast],
+      "0917" => %w[southwest northeast],
+      "1016" => %w[southwest]
     }.freeze
 
     RAILROAD_EXITS = {
@@ -58,16 +72,24 @@ module Map
       "0327" => %w[north south],
       "0328" => %w[southwest north],
       "0411" => %w[northwest south],
-      "0412" => %w[northwest north south],
+      "0412" => %w[northwest north south southeast],
       "0413" => %w[north south],
       "0414" => %w[north south],
       "0415" => %w[north south],
       "0416" => %w[north south],
       "0417" => %w[north south],
       "0418" => %w[north south],
-      "0419" => %w[north south],
+      "0419" => %w[north south northeast],
       "0420" => %w[north south],
-      "0421" => %w[north southwest]
+      "0421" => %w[north southwest],
+      "0513" => %w[northwest southeast],
+      "0519" => %w[southwest northeast],
+      "0613" => %w[northwest southeast],
+      "0618" => %w[southwest],
+      "0714" => %w[northwest southeast],
+      "0814" => %w[northwest southeast],
+      "0915" => %w[northwest southeast],
+      "1015" => %w[northwest]
     }.freeze
 
     HEXSIDE_FEATURES = [
