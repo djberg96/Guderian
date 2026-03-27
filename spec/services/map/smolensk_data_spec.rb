@@ -70,7 +70,9 @@ RSpec.describe Map::SmolenskData do
       expect(Hex.find_by!(hex_number: "0525").terrain_type).to eq("major_city")
       expect(Hex.find_by!(hex_number: "0602").terrain_type).to eq("clear")
       expect(Hex.find_by!(hex_number: "0615").terrain_type).to eq("swamp")
+      expect(Hex.find_by!(hex_number: "0708").terrain_type).to eq("swamp")
       expect(Hex.find_by!(hex_number: "0802").terrain_type).to eq("swamp")
+      expect(Hex.find_by!(hex_number: "0808").terrain_type).to eq("swamp")
       expect(Hex.find_by!(hex_number: "1006").terrain_type).to eq("swamp")
       expect(Hex.find_by!(hex_number: "1107").terrain_type).to eq("swamp")
 
@@ -105,6 +107,30 @@ RSpec.describe Map::SmolenskData do
         feature_type: "river"
       )
       expect(river_0313_0212).to be_present
+
+      [
+        %w[0313 northeast],
+        %w[0412 south],
+        %w[0412 southeast],
+        %w[0412 northeast],
+        %w[0411 southeast],
+        %w[0512 north],
+        %w[0511 southeast],
+        %w[0611 north],
+        %w[0610 southeast],
+        %w[0710 south],
+        %w[0711 northeast],
+        %w[0810 south],
+        %w[0810 southeast]
+      ].each do |hex_number, direction|
+        expect(
+          HexsideFeature.find_by!(
+            hex: Hex.find_by!(hex_number: hex_number),
+            direction: direction,
+            feature_type: "river"
+          )
+        ).to be_present
+      end
 
       southwest_river = HexsideFeature.find_by!(
         hex: Hex.find_by!(hex_number: "0320"),
