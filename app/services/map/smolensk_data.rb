@@ -94,7 +94,19 @@ module Map
       { hex_number: "0330", direction: "southeast", feature_type: "river" },
       { hex_number: "0330", direction: "northeast", feature_type: "river" },
       { hex_number: "0331", direction: "southeast", feature_type: "river" },
-      { hex_number: "0331", direction: "northeast", feature_type: "river" }
+      { hex_number: "0331", direction: "northeast", feature_type: "river" },
+      { hex_number: "0419", direction: "southeast", feature_type: "river" },
+      { hex_number: "0420", direction: "southeast", feature_type: "river" },
+      { hex_number: "0420", direction: "northeast", feature_type: "river" },
+      { hex_number: "0421", direction: "southeast", feature_type: "river" },
+      { hex_number: "0421", direction: "northeast", feature_type: "river" },
+      { hex_number: "0422", direction: "southeast", feature_type: "river" },
+      { hex_number: "0422", direction: "northeast", feature_type: "river" },
+      { hex_number: "0423", direction: "southeast", feature_type: "river" },
+      { hex_number: "0423", direction: "northeast", feature_type: "river" },
+      { hex_number: "0424", direction: "south", feature_type: "river" },
+      { hex_number: "0424", direction: "southeast", feature_type: "river" },
+      { hex_number: "0424", direction: "northeast", feature_type: "river" }
     ].freeze
 
     class << self

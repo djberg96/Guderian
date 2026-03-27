@@ -120,6 +120,44 @@ RSpec.describe Map::SmolenskData do
         expect(east_bank_river).to be_present
       end
 
+      river_0424_0425 = HexsideFeature.find_by!(
+        hex: Hex.find_by!(hex_number: "0424"),
+        direction: "south",
+        feature_type: "river"
+      )
+      expect(river_0424_0425).to be_present
+
+      snake_0419_southeast = HexsideFeature.find_by!(
+        hex: Hex.find_by!(hex_number: "0419"),
+        direction: "southeast",
+        feature_type: "river"
+      )
+      expect(snake_0419_southeast).to be_present
+
+      expect(
+        HexsideFeature.find_by(
+          hex: Hex.find_by!(hex_number: "0419"),
+          direction: "northeast",
+          feature_type: "river"
+        )
+      ).to be_nil
+
+      %w[0420 0421 0422 0423 0424].each do |hex_number|
+        snake_southeast = HexsideFeature.find_by!(
+          hex: Hex.find_by!(hex_number: hex_number),
+          direction: "southeast",
+          feature_type: "river"
+        )
+        expect(snake_southeast).to be_present
+
+        snake_northeast = HexsideFeature.find_by!(
+          hex: Hex.find_by!(hex_number: hex_number),
+          direction: "northeast",
+          feature_type: "river"
+        )
+        expect(snake_northeast).to be_present
+      end
+
       expect(Hex.find_by!(hex_number: "0501").road_exits).to eq(%w[northwest southeast])
       expect(Hex.find_by!(hex_number: "0601").road_exits).to eq(%w[northwest southeast])
       expect(Hex.find_by!(hex_number: "0702").road_exits).to eq(%w[northwest south])
