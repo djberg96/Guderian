@@ -9,7 +9,7 @@ module Map
       0606 0617 0628
       0710 0810 0816 0817 0917
       0801 0901 0902
-      1009 1109 1208
+      1009 1010 1109 1110 1111 1208 1209 1210
       1104 1105 1106 1203 1204 1205 1206 1304 1305
     ].freeze
 
@@ -24,6 +24,7 @@ module Map
       "0808" => "swamp",
       "1006" => "swamp",
       "1107" => "swamp",
+      "1310" => "swamp",
       "0615" => "swamp"
     }.freeze
 
@@ -51,7 +52,14 @@ module Map
       "0718" => %w[northwest northeast],
       "0817" => %w[southwest northeast],
       "0917" => %w[southwest northeast],
-      "1016" => %w[southwest]
+      "1016" => %w[southwest],
+      "0911" => %w[northeast],
+      "1010" => %w[southwest northeast],
+      "1110" => %w[southwest northeast],
+      "1209" => %w[southwest northeast],
+      "1309" => %w[southwest southeast],
+      "1409" => %w[northwest northeast],
+      "1509" => %w[southwest]
     }.freeze
 
     RAILROAD_EXITS = {
