@@ -15,7 +15,6 @@ module Map
       "0420" => "minor_city",
       "0424" => "major_city",
       "0525" => "major_city",
-      "0602" => "lake",
       "0615" => "swamp"
     }.freeze
 
@@ -106,7 +105,13 @@ module Map
       { hex_number: "0423", direction: "northeast", feature_type: "river" },
       { hex_number: "0424", direction: "south", feature_type: "river" },
       { hex_number: "0424", direction: "southeast", feature_type: "river" },
-      { hex_number: "0424", direction: "northeast", feature_type: "river" }
+      { hex_number: "0424", direction: "northeast", feature_type: "river" },
+      { hex_number: "0602", direction: "north", feature_type: "lake" },
+      { hex_number: "0602", direction: "northeast", feature_type: "lake" },
+      { hex_number: "0602", direction: "southeast", feature_type: "lake" },
+      { hex_number: "0602", direction: "south", feature_type: "lake" },
+      { hex_number: "0602", direction: "southwest", feature_type: "lake" },
+      { hex_number: "0602", direction: "northwest", feature_type: "lake" }
     ].freeze
 
     class << self

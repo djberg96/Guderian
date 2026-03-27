@@ -1,5 +1,5 @@
 class Hex < ApplicationRecord
-  TERRAIN_TYPES = %w[clear forest major_city minor_city swamp lake].freeze
+  TERRAIN_TYPES = %w[clear forest major_city minor_city swamp].freeze
   EDGE_DIRECTIONS = %w[north northeast southeast south southwest northwest].freeze
 
   has_many :units, dependent: :restrict_with_exception

@@ -62,6 +62,17 @@ module BoardsHelper
     chains.map { |points| build_polyline_path(points) }.join(" ")
   end
 
+  def lake_path_data(hexes)
+    lake_features = hexes.flat_map(&:hexside_features).select { |feature| feature.feature_type == "lake" }
+    chains = merge_feature_segments(lake_features.map { |feature| global_segment_points(feature) })
+    chains.map { |points| build_polyline_path(points) }.join(" ")
+  end
+
+  def full_lake_hex?(hex)
+    lake_directions = hex.hexside_features.select { |feature| feature.feature_type == "lake" }.map(&:direction).sort
+    lake_directions == Hex::EDGE_DIRECTIONS.sort
+  end
+
   def overlay_path_data(directions)
     points = Array(directions).filter_map { |direction| EDGE_POINTS[direction.to_s] }
     center = [32.0, 27.71]

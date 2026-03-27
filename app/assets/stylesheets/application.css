@@ -179,6 +179,11 @@ body {
   stroke-width: 1.2;
 }
 
+.hex-cell .lake-fill {
+  fill: #7fa9ba;
+  stroke: none;
+}
+
 .hex-cell text {
   fill: var(--grid);
   font-size: 12px;
@@ -201,6 +206,21 @@ body {
 .river-edge-inner {
   stroke: #78a9bc;
   stroke-width: 6;
+}
+
+.lake-edge-bleed {
+  stroke: rgba(127, 169, 186, 0.42);
+  stroke-width: 22;
+}
+
+.lake-edge {
+  stroke: #6f98aa;
+  stroke-width: 14;
+}
+
+.lake-edge-inner {
+  stroke: #9bc3d3;
+  stroke-width: 8;
 }
 
 .river-edge-northeast,

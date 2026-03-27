@@ -89,17 +89,8 @@
               height="<%= Map::HexGridBuilder::HEX_HEIGHT %>"
               preserveAspectRatio="none"
             />
-            <% hex.hexside_features.each do |feature| %>
-              <% unless feature.feature_type == "river" %>
-                <image
-                  href="<%= asset_href(feature.asset_path) %>"
-                  x="<%= hex.svg_x %>"
-                  y="<%= hex.svg_y %>"
-                  width="<%= Map::HexGridBuilder::HEX_WIDTH %>"
-                  height="<%= Map::HexGridBuilder::HEX_HEIGHT %>"
-                  preserveAspectRatio="none"
-                />
-              <% end %>
+            <% if full_lake_hex?(hex) %>
+              <polygon class="lake-fill" points="<%= flat_top_hex_points(hex) %>" />
             <% end %>
             <% if hex.road_exits.any? %>
               <path
@@ -139,6 +130,13 @@
         <% if river_paths.present? %>
           <path class="hexside-overlay river-edge" d="<%= river_paths %>" />
           <path class="hexside-overlay river-edge river-edge-inner" d="<%= river_paths %>" />
+        <% end %>
+
+        <% lake_paths = lake_path_data(@hexes) %>
+        <% if lake_paths.present? %>
+          <path class="hexside-overlay lake-edge-bleed" d="<%= lake_paths %>" />
+          <path class="hexside-overlay lake-edge" d="<%= lake_paths %>" />
+          <path class="hexside-overlay lake-edge-inner" d="<%= lake_paths %>" />
         <% end %>
       </svg>
     </div>

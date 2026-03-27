@@ -48,7 +48,7 @@ RSpec.describe Map::SmolenskData do
       expect(Hex.find_by!(hex_number: "0420").terrain_type).to eq("minor_city")
       expect(Hex.find_by!(hex_number: "0424").terrain_type).to eq("major_city")
       expect(Hex.find_by!(hex_number: "0525").terrain_type).to eq("major_city")
-      expect(Hex.find_by!(hex_number: "0602").terrain_type).to eq("lake")
+      expect(Hex.find_by!(hex_number: "0602").terrain_type).to eq("clear")
       expect(Hex.find_by!(hex_number: "0615").terrain_type).to eq("swamp")
 
       river = HexsideFeature.find_by!(hex: Hex.find_by!(hex_number: "0112"), direction: "south", feature_type: "river")
@@ -156,6 +156,15 @@ RSpec.describe Map::SmolenskData do
           feature_type: "river"
         )
         expect(snake_northeast).to be_present
+      end
+
+      %w[north northeast southeast south southwest northwest].each do |direction|
+        lake_edge = HexsideFeature.find_by!(
+          hex: Hex.find_by!(hex_number: "0602"),
+          direction: direction,
+          feature_type: "lake"
+        )
+        expect(lake_edge).to be_present
       end
 
       expect(Hex.find_by!(hex_number: "0501").road_exits).to eq(%w[northwest southeast])
