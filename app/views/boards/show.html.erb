@@ -139,6 +139,12 @@
           />
         <% end %>
 
+        <% city_labels(@hexes).each do |label| %>
+          <text class="map-city-label" x="<%= label[:x] %>" y="<%= label[:y] %>">
+            <%= label[:text] %>
+          </text>
+        <% end %>
+
         <% river_paths = river_path_data(@hexes) %>
         <% if river_paths.present? %>
           <path class="hexside-overlay river-edge" d="<%= river_paths %>" />

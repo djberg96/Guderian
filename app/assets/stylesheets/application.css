@@ -196,6 +196,19 @@ body {
   text-anchor: middle;
 }
 
+.map-city-label {
+  fill: #1f1a15;
+  stroke: rgba(247, 239, 220, 0.95);
+  stroke-width: 2px;
+  paint-order: stroke fill;
+  font-size: 16px;
+  font-style: italic;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-anchor: middle;
+  pointer-events: none;
+}
+
 .hexside-overlay {
   fill: none;
   stroke-linecap: round;

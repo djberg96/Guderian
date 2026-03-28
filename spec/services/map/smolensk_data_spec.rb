@@ -277,6 +277,46 @@ RSpec.describe Map::SmolenskData do
         expect(snake_northeast).to be_present
       end
 
+      expect(
+        HexsideFeature.find_by(
+          hex: Hex.find_by!(hex_number: "0420"),
+          direction: "southwest",
+          feature_type: "river"
+        )
+      ).to be_present
+
+      expect(
+        HexsideFeature.find_by(
+          hex: Hex.find_by!(hex_number: "0420"),
+          direction: "south",
+          feature_type: "river"
+        )
+      ).to be_present
+
+      expect(
+        HexsideFeature.find_by(
+          hex: Hex.find_by!(hex_number: "0413"),
+          direction: "southeast",
+          feature_type: "river"
+        )
+      ).to be_present
+
+      expect(
+        HexsideFeature.find_by(
+          hex: Hex.find_by!(hex_number: "0413"),
+          direction: "northeast",
+          feature_type: "river"
+        )
+      ).to be_present
+
+      expect(
+        HexsideFeature.find_by(
+          hex: Hex.find_by!(hex_number: "0414"),
+          direction: "northeast",
+          feature_type: "river"
+        )
+      ).to be_present
+
       %w[north northeast southeast south southwest northwest].each do |direction|
         lake_edge = HexsideFeature.find_by!(
           hex: Hex.find_by!(hex_number: "0602"),

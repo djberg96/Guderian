@@ -77,6 +77,34 @@ module BoardsHelper
     chains.map { |points| build_polyline_path(points) }.join(" ")
   end
 
+  CITY_LABELS = [
+    { text: "Vitebsk", hex_numbers: %w[0412 0513], x_ratio: 0.88, y_ratio: 0.56 },
+    { text: "Orsha", hex_numbers: %w[0420], x_ratio: 0.04, y_ratio: 0.28 },
+    { text: "Mogilev", hex_numbers: %w[0424 0525], x_ratio: 0.94, y_ratio: 0.48 }
+  ].freeze
+
+  def city_labels(hexes)
+    hex_lookup = hexes.index_by(&:hex_number)
+
+    CITY_LABELS.filter_map do |label|
+      anchor_hexes = label[:hex_numbers].filter_map { |hex_number| hex_lookup[hex_number] }
+      next if anchor_hexes.empty?
+
+      min_x = anchor_hexes.map(&:svg_x).min
+      max_x = anchor_hexes.map(&:svg_x).max
+      min_y = anchor_hexes.map(&:svg_y).min
+      max_y = anchor_hexes.map(&:svg_y).max
+      anchor_width = (max_x - min_x) + Map::HexGridBuilder::HEX_WIDTH
+      anchor_height = (max_y - min_y) + Map::HexGridBuilder::HEX_HEIGHT
+
+      {
+        text: label[:text],
+        x: (min_x + (anchor_width * label[:x_ratio])).round(2),
+        y: (min_y + (anchor_height * label[:y_ratio])).round(2)
+      }
+    end
+  end
+
   def full_lake_hex?(hex)
     lake_directions = hex.hexside_features.select { |feature| feature.feature_type == "lake" }.map(&:direction).sort
     lake_directions == Hex::EDGE_DIRECTIONS.sort
