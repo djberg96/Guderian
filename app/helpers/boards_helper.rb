@@ -80,7 +80,10 @@ module BoardsHelper
   CITY_LABELS = [
     { text: "Vitebsk", hex_numbers: %w[0412 0513], x_ratio: 0.88, y_ratio: 0.56 },
     { text: "Orsha", hex_numbers: %w[0420], x_ratio: 0.04, y_ratio: 0.28 },
-    { text: "Mogilev", hex_numbers: %w[0424 0525], x_ratio: 0.94, y_ratio: 0.48 }
+    { text: "Mogilev", hex_numbers: %w[0424 0525], x_ratio: 0.94, y_ratio: 0.48 },
+    { text: "Krichev", hex_numbers: %w[1427], x_ratio: 0.62, y_ratio: 0.6 },
+    { text: "Mstislavl", hex_numbers: %w[1524], x_ratio: 0.68, y_ratio: 0.56 },
+    { text: "Roslavl", hex_numbers: %w[2626], x_ratio: 0.6, y_ratio: 0.62 }
   ].freeze
 
   def city_labels(hexes)
