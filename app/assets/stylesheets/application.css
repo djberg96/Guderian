@@ -209,6 +209,13 @@ body {
   pointer-events: none;
 }
 
+.map-city-label-major {
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
 .hexside-overlay {
   fill: none;
   stroke-linecap: round;

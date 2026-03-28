@@ -27,6 +27,8 @@ module Map
       "0525" => "major_city",
       "1427" => "minor_city",
       "1524" => "minor_city",
+      "2216" => "major_city",
+      "2217" => "major_city",
       "2626" => "minor_city",
       "0802" => "swamp",
       "0716" => "swamp",

@@ -83,6 +83,7 @@ module BoardsHelper
     { text: "Mogilev", hex_numbers: %w[0424 0525], x_ratio: 0.94, y_ratio: 0.48 },
     { text: "Krichev", hex_numbers: %w[1427], x_ratio: 0.62, y_ratio: 0.6 },
     { text: "Mstislavl", hex_numbers: %w[1524], x_ratio: 0.68, y_ratio: 0.56 },
+    { text: "SMOLENSK", hex_numbers: %w[2216 2217], x_ratio: -0.5, y_ratio: 0.54, variant: :major },
     { text: "Roslavl", hex_numbers: %w[2626], x_ratio: 0.6, y_ratio: 0.62 }
   ].freeze
 
@@ -103,7 +104,8 @@ module BoardsHelper
       {
         text: label[:text],
         x: (min_x + (anchor_width * label[:x_ratio])).round(2),
-        y: (min_y + (anchor_height * label[:y_ratio])).round(2)
+        y: (min_y + (anchor_height * label[:y_ratio])).round(2),
+        variant: label[:variant]
       }
     end
   end
