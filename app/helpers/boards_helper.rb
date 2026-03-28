@@ -132,7 +132,7 @@ module BoardsHelper
     special_ties = special_railroad_ties(hex, direction_list, lateral_offset:)
     return special_ties if special_ties.present?
 
-    return through_route_ties(direction_list, lateral_offset:) if direction_list.length == 2
+    return through_route_ties(direction_list, lateral_offset:, route_style: :railroad) if direction_list.length == 2
 
     direction_list.flat_map do |direction|
       start_point, midpoint = route_segment_points(direction, lateral_offset:)
@@ -145,7 +145,7 @@ module BoardsHelper
   def route_lateral_offset(hex, feature_type)
     return 0.0 unless shared_route_lane?(hex)
 
-    feature_type.to_s == "road" ? -4.0 : 4.0
+    feature_type.to_s == "road" ? -7.0 : 7.0
   end
 
   FOREST_BRIDGE_COLORS = ["#6f8756", "#556c41", "#7f9864"].freeze
@@ -346,9 +346,9 @@ module BoardsHelper
     midpoints = directions.filter_map { |direction| route_midpoint(direction) }
     return "" unless midpoints.length == 2
 
-    if route_style.to_sym == :road && !opposite_directions?(directions)
+    if %i[road railroad].include?(route_style.to_sym) && !opposite_directions?(directions)
       start_point, end_point = apply_line_offset(midpoints[0], midpoints[1], lateral_offset)
-      control_point = bend_control_point(directions, lateral_offset:)
+      control_point = bend_control_point(directions, lateral_offset:, route_style:)
       return format(
         "M %.2f %.2f Q %.2f %.2f %.2f %.2f",
         start_point[0], start_point[1],
@@ -361,9 +361,15 @@ module BoardsHelper
     format("M %.2f %.2f L %.2f %.2f", start_point[0], start_point[1], end_point[0], end_point[1])
   end
 
-  def through_route_ties(directions, lateral_offset:)
+  def through_route_ties(directions, lateral_offset:, route_style: :generic)
     midpoints = directions.filter_map { |direction| route_midpoint(direction) }
     return "" unless midpoints.length == 2
+
+    if route_style.to_sym == :railroad && !opposite_directions?(directions)
+      start_point, end_point = apply_line_offset(midpoints[0], midpoints[1], lateral_offset)
+      control_point = bend_control_point(directions, lateral_offset:, route_style:)
+      return curved_tie_segments(start_point, control_point, end_point).join(" ")
+    end
 
     start_point, end_point = apply_line_offset(midpoints[0], midpoints[1], lateral_offset)
     tie_segments(start_point, end_point).join(" ")
@@ -422,7 +428,7 @@ module BoardsHelper
     OPPOSITE_DIRECTION_PAIRS.include?(Array(directions).map(&:to_s).sort)
   end
 
-  def bend_control_point(directions, lateral_offset:)
+  def bend_control_point(directions, lateral_offset:, route_style: :generic)
     center = [32.0, 27.71]
     shifts = Array(directions).filter_map do |direction|
       midpoint = route_midpoint(direction)
@@ -435,7 +441,8 @@ module BoardsHelper
 
     avg_x = shifts.sum { |shift| shift[0] } / shifts.length.to_f
     avg_y = shifts.sum { |shift| shift[1] } / shifts.length.to_f
-    [(center[0] + avg_x).round(2), (center[1] + avg_y).round(2)]
+    style_bias = route_style.to_sym == :railroad ? 1.12 : 1.0
+    [(center[0] + (avg_x * style_bias)).round(2), (center[1] + (avg_y * style_bias)).round(2)]
   end
 
   def transition_shifted_endpoint(start_direction, end_direction, lateral_offset:)
@@ -488,6 +495,56 @@ module BoardsHelper
     end
 
     segments
+  end
+
+  def curved_tie_segments(start_point, control_point, end_point)
+    points = sample_quadratic_curve(start_point, control_point, end_point, segments: 24)
+    return [] if points.length < 2
+
+    tie_spacing = 8.0
+    tie_length = 7.0
+    start_offset = 7.0
+    traversed = 0.0
+    target = start_offset
+    segments = []
+
+    points.each_cons(2) do |first_point, second_point|
+      dx = second_point[0] - first_point[0]
+      dy = second_point[1] - first_point[1]
+      segment_length = Math.sqrt((dx**2) + (dy**2))
+      next if segment_length.zero?
+
+      while traversed + segment_length >= target
+        ratio = (target - traversed) / segment_length
+        anchor_x = first_point[0] + (dx * ratio)
+        anchor_y = first_point[1] + (dy * ratio)
+        unit_x = dx / segment_length
+        unit_y = dy / segment_length
+        normal_x = -unit_y
+        normal_y = unit_x
+        half_tie = tie_length / 2.0
+        x1 = anchor_x - (normal_x * half_tie)
+        y1 = anchor_y - (normal_y * half_tie)
+        x2 = anchor_x + (normal_x * half_tie)
+        y2 = anchor_y + (normal_y * half_tie)
+        segments << format("M %.2f %.2f L %.2f %.2f", x1, y1, x2, y2)
+        target += tie_spacing
+      end
+
+      traversed += segment_length
+    end
+
+    segments
+  end
+
+  def sample_quadratic_curve(start_point, control_point, end_point, segments:)
+    (0..segments).map do |index|
+      t = index / segments.to_f
+      one_minus_t = 1.0 - t
+      x = (one_minus_t**2 * start_point[0]) + (2 * one_minus_t * t * control_point[0]) + (t**2 * end_point[0])
+      y = (one_minus_t**2 * start_point[1]) + (2 * one_minus_t * t * control_point[1]) + (t**2 * end_point[1])
+      [x, y]
+    end
   end
 
   def global_segment_points(feature)
