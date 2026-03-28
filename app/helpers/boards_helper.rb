@@ -562,40 +562,73 @@ module BoardsHelper
     return build_polyline_path(points) if points.length < 3
 
     path = [format("M %.2f %.2f", points.first[0], points.first[1])]
+    extended_points = [points.first] + points + [points.last]
 
-    points.each_cons(3).with_index do |(previous_point, current_point, next_point), index|
-      control_point = flow_control_point(previous_point, current_point, next_point, index)
-      midpoint = [
-        ((current_point[0] + next_point[0]) / 2.0).round(2),
-        ((current_point[1] + next_point[1]) / 2.0).round(2)
-      ]
+    points.each_with_index do |point, index|
+      next if index.zero?
 
-      if index.zero?
-        first_midpoint = [
-          ((previous_point[0] + current_point[0]) / 2.0).round(2),
-          ((previous_point[1] + current_point[1]) / 2.0).round(2)
-        ]
-        path << format("Q %.2f %.2f %.2f %.2f", control_point[0], control_point[1], first_midpoint[0], first_midpoint[1])
-      end
+      previous_control = flow_control_points(
+        extended_points[index - 1],
+        extended_points[index],
+        extended_points[index + 1],
+        extended_points[index + 2]
+      )
 
-      path << format("Q %.2f %.2f %.2f %.2f", control_point[0], control_point[1], midpoint[0], midpoint[1])
+      path << format(
+        "C %.2f %.2f %.2f %.2f %.2f %.2f",
+        previous_control[0][0], previous_control[0][1],
+        previous_control[1][0], previous_control[1][1],
+        point[0], point[1]
+      )
     end
-
-    penultimate = points[-2]
-    last_point = points[-1]
-    path << format("L %.2f %.2f", last_point[0], last_point[1]) if penultimate != last_point
     path.join(" ")
   end
 
-  def flow_control_point(previous_point, current_point, next_point, index)
-    bend_x = ((next_point[0] - previous_point[0]) * 0.18)
-    bend_y = ((next_point[1] - previous_point[1]) * 0.18)
-    sway = index.even? ? 1.0 : -1.0
+  def flow_control_points(previous_point, current_point, next_point, following_point)
+    smoothing = 0.18
 
-    [
-      (current_point[0] + (bend_y * 0.12 * sway)).round(2),
-      (current_point[1] - (bend_x * 0.12 * sway)).round(2)
+    first_control = [
+      current_point[0] + ((next_point[0] - previous_point[0]) * smoothing),
+      current_point[1] + ((next_point[1] - previous_point[1]) * smoothing)
     ]
+
+    second_control = [
+      next_point[0] - ((following_point[0] - current_point[0]) * smoothing),
+      next_point[1] - ((following_point[1] - current_point[1]) * smoothing)
+    ]
+
+    wobble_horizontal_controls!(previous_point, current_point, next_point, following_point, first_control, second_control)
+
+    first_control.map! { |value| value.round(2) }
+    second_control.map! { |value| value.round(2) }
+
+    [first_control, second_control]
+  end
+
+  def wobble_horizontal_controls!(previous_point, current_point, next_point, following_point, first_control, second_control)
+    incoming_dx = current_point[0] - previous_point[0]
+    incoming_dy = current_point[1] - previous_point[1]
+    outgoing_dx = next_point[0] - current_point[0]
+    outgoing_dy = next_point[1] - current_point[1]
+    following_dx = following_point[0] - next_point[0]
+    following_dy = following_point[1] - next_point[1]
+
+    incoming_horizontal = incoming_dx.abs > 18.0 && incoming_dy.abs < 4.0
+    outgoing_horizontal = outgoing_dx.abs > 18.0 && outgoing_dy.abs < 4.0
+    following_horizontal = following_dx.abs > 18.0 && following_dy.abs < 4.0
+    return unless incoming_horizontal || outgoing_horizontal || following_horizontal
+
+    wobble_seed = (
+      previous_point[0].round +
+      current_point[0].round +
+      next_point[0].round +
+      following_point[0].round
+    )
+    wobble = 4.5 + (wobble_seed % 3)
+    direction = wobble_seed.even? ? 1.0 : -1.0
+
+    first_control[1] += wobble * direction if incoming_horizontal || outgoing_horizontal
+    second_control[1] -= wobble * direction if outgoing_horizontal || following_horizontal
   end
 
   def point_key(point)

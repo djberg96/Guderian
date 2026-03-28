@@ -11,6 +11,7 @@ module Map
       0721 0722 0723 0822 0823 0924
       0728 0729 0828 0829 0927 0929 0930 1027 1029 1129 1228 1229 1329 1330 1429
       0801 0901 0902
+      1601 1701 1702 1801 1901 1902 2001 2101 2201 2301 2401 2501 2502 2601 2602 2701 2702
       1009 1010 1014 1109 1110 1111 1116 1118 1208 1209 1210 1216 1218
       1104 1105 1106 1203 1204 1205 1206 1304 1305
     ].freeze
@@ -223,6 +224,29 @@ module Map
       { hex_number: "1707", direction: "northeast", feature_type: "river" },
       { hex_number: "1707", direction: "south", feature_type: "river" },
       { hex_number: "1707", direction: "southeast", feature_type: "river" },
+      { hex_number: "1702", direction: "southeast", feature_type: "river" },
+      { hex_number: "1801", direction: "south", feature_type: "river" },
+      { hex_number: "1902", direction: "southwest", feature_type: "river" },
+      { hex_number: "1902", direction: "south", feature_type: "river" },
+      { hex_number: "1902", direction: "southeast", feature_type: "river" },
+      { hex_number: "2001", direction: "south", feature_type: "river" },
+      { hex_number: "2001", direction: "southeast", feature_type: "river" },
+      { hex_number: "2101", direction: "south", feature_type: "river" },
+      { hex_number: "2201", direction: "southwest", feature_type: "river" },
+      { hex_number: "2201", direction: "south", feature_type: "river" },
+      { hex_number: "2201", direction: "southeast", feature_type: "river" },
+      { hex_number: "2301", direction: "south", feature_type: "river" },
+      { hex_number: "2401", direction: "southwest", feature_type: "river" },
+      { hex_number: "2401", direction: "south", feature_type: "river" },
+      { hex_number: "2502", direction: "southwest", feature_type: "river" },
+      { hex_number: "2502", direction: "south", feature_type: "river" },
+      { hex_number: "2602", direction: "southwest", feature_type: "river" },
+      { hex_number: "2602", direction: "south", feature_type: "river" },
+      { hex_number: "2602", direction: "southeast", feature_type: "river" },
+      { hex_number: "2701", direction: "southeast", feature_type: "river" },
+      { hex_number: "2702", direction: "northeast", feature_type: "river" },
+      { hex_number: "2702", direction: "southeast", feature_type: "river" },
+      { hex_number: "2702", direction: "south", feature_type: "river" },
       { hex_number: "1607", direction: "northeast", feature_type: "river" },
       { hex_number: "1606", direction: "south", feature_type: "river" },
       { hex_number: "1507", direction: "southeast", feature_type: "river" },
