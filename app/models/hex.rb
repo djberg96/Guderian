@@ -34,6 +34,7 @@ class Hex < ApplicationRecord
 
   def terrain_asset_paths
     return %w[terrain/clear.svg terrain/forest_bushy.svg] if terrain_type == "forest"
+    return %w[terrain/clear.svg terrain/swamp.svg] if terrain_type == "swamp"
 
     ["terrain/#{terrain_type}.svg"]
   end
