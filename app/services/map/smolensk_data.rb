@@ -97,7 +97,16 @@ module Map
       "1615" => %w[southwest southeast],
       "1716" => %w[northwest northeast],
       "1815" => %w[southwest northeast],
-      "1915" => %w[southwest]
+      "1915" => %w[southwest northeast],
+      "2014" => %w[southwest southeast],
+      "2115" => %w[northwest northeast],
+      "2214" => %w[southwest southeast],
+      "2315" => %w[northwest northeast],
+      "2414" => %w[southwest southeast],
+      "2515" => %w[northwest northeast],
+      "2614" => %w[southwest southeast],
+      "2715" => %w[northwest northeast],
+      "2814" => %w[southwest]
     }.freeze
 
     RAILROAD_EXITS = {
