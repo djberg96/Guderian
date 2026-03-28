@@ -1,6 +1,7 @@
 module BoardsHelper
   BASE_HEX_WIDTH = 64.0
   BASE_HEX_HEIGHT = 55.43
+  FOREST_BRIDGE_DIRECTIONS = %w[south northeast southeast].freeze
   EDGE_POINTS = {
     "north" => [[16.0, 0.0], [48.0, 0.0]],
     "northeast" => [[48.0, 0.0], [64.0, 27.71]],
@@ -8,6 +9,14 @@ module BoardsHelper
     "south" => [[48.0, 55.43], [16.0, 55.43]],
     "southwest" => [[16.0, 55.43], [0.0, 27.71]],
     "northwest" => [[0.0, 27.71], [16.0, 0.0]]
+  }.freeze
+  OPPOSITE_DIRECTIONS = {
+    "north" => "south",
+    "northeast" => "southwest",
+    "southeast" => "northwest",
+    "south" => "north",
+    "southwest" => "northeast",
+    "northwest" => "southeast"
   }.freeze
 
   def flat_top_hex_points(hex, size: Map::HexGridBuilder::HEX_SIZE)
@@ -111,7 +120,114 @@ module BoardsHelper
     feature_type.to_s == "road" ? -4.0 : 4.0
   end
 
+  FOREST_BRIDGE_COLORS = ["#6f8756", "#556c41", "#7f9864"].freeze
+
+  def forest_bridge_circles(hexes)
+    hex_lookup = hexes.index_by { |hex| [hex.column, hex.row] }
+
+    hexes.filter { |hex| hex.terrain_type == "forest" }.flat_map do |hex|
+      FOREST_BRIDGE_DIRECTIONS.flat_map do |direction|
+        neighbor = neighboring_hex(hex, direction, hex_lookup)
+        next [] unless neighbor&.terrain_type == "forest"
+        next [] if river_between?(hex, direction, neighbor)
+
+        build_forest_bridge_circles(hex, direction, neighbor)
+      end
+    end
+  end
+
   private
+
+  def build_forest_bridge_circles(hex, direction, neighbor)
+    scale = Map::HexGridBuilder::HEX_HEIGHT / BASE_HEX_HEIGHT
+    start_point, end_point = EDGE_POINTS.fetch(direction)
+    global_start = [hex.svg_x + (start_point[0] * scale), hex.svg_y + (start_point[1] * scale)]
+    global_end = [hex.svg_x + (end_point[0] * scale), hex.svg_y + (end_point[1] * scale)]
+    midpoint = [((global_start[0] + global_end[0]) / 2.0), ((global_start[1] + global_end[1]) / 2.0)]
+    normal_x, normal_y = normalized_perpendicular(global_start, global_end)
+    tangent_x, tangent_y = normalized_tangent(global_start, global_end)
+    seed = [hex.hex_number, neighbor.hex_number].sort.join("-").each_byte.sum
+    cluster_length = Map::HexGridBuilder::HEX_WIDTH * 0.16
+    cluster_depth = Map::HexGridBuilder::HEX_HEIGHT * 0.14
+    canopy_layout = [
+      { along: -1.9, across: -1.75, radius: 6.8, color: 0 },
+      { along: -1.35, across: -0.95, radius: 6.2, color: 1 },
+      { along: -0.8, across: -1.35, radius: 7.0, color: 0 },
+      { along: -0.2, across: -0.55, radius: 6.0, color: 2 },
+      { along: 0.35, across: 0.6, radius: 6.1, color: 2 },
+      { along: 0.9, across: 1.35, radius: 7.1, color: 1 },
+      { along: 1.45, across: 0.95, radius: 6.3, color: 0 },
+      { along: 2.0, across: 1.75, radius: 6.9, color: 1 },
+      { along: -1.1, across: 0.2, radius: 5.7, color: 2 },
+      { along: 1.1, across: -0.2, radius: 5.8, color: 2 }
+    ]
+
+    canopy_layout.map.with_index do |node, index|
+      along_offset = node[:along] * cluster_length
+      across_offset = node[:across] * cluster_depth
+      radius = node[:radius] + (((seed + index) % 3) - 1) * 0.5
+      center_x = midpoint[0] + (tangent_x * along_offset) + (normal_x * across_offset)
+      center_y = midpoint[1] + (tangent_y * along_offset) + (normal_y * across_offset)
+
+      {
+        cx: center_x.round(2),
+        cy: center_y.round(2),
+        r: radius.round(2),
+        fill: FOREST_BRIDGE_COLORS[(node[:color] + seed + index) % FOREST_BRIDGE_COLORS.length],
+        opacity: (0.94 + (((seed + index) % 2) * 0.03)).round(2)
+      }
+    end
+  end
+
+  def neighboring_hex(hex, direction, hex_lookup)
+    column = hex.column
+    row = hex.row
+
+    neighbor_column, neighbor_row =
+      case direction.to_s
+      when "north"
+        [column, row - 1]
+      when "south"
+        [column, row + 1]
+      when "northeast"
+        column.odd? ? [column + 1, row - 1] : [column + 1, row]
+      when "southeast"
+        column.odd? ? [column + 1, row] : [column + 1, row + 1]
+      when "southwest"
+        column.odd? ? [column - 1, row] : [column - 1, row + 1]
+      when "northwest"
+        column.odd? ? [column - 1, row - 1] : [column - 1, row]
+      end
+
+    return unless neighbor_column && neighbor_row
+
+    hex_lookup[[neighbor_column, neighbor_row]]
+  end
+
+  def river_between?(hex, direction, neighbor)
+    hex.hexside_features.any? { |feature| feature.feature_type == "river" && feature.direction == direction.to_s } ||
+      neighbor.hexside_features.any? do |feature|
+        feature.feature_type == "river" && feature.direction == OPPOSITE_DIRECTIONS.fetch(direction.to_s)
+      end
+  end
+
+  def normalized_perpendicular(start_point, end_point)
+    dx = end_point[0] - start_point[0]
+    dy = end_point[1] - start_point[1]
+    length = Math.sqrt((dx**2) + (dy**2))
+    return [0.0, 0.0] if length.zero?
+
+    [(-dy / length), (dx / length)]
+  end
+
+  def normalized_tangent(start_point, end_point)
+    dx = end_point[0] - start_point[0]
+    dy = end_point[1] - start_point[1]
+    length = Math.sqrt((dx**2) + (dy**2))
+    return [0.0, 0.0] if length.zero?
+
+    [dx / length, dy / length]
+  end
 
   def special_route_path(hex, directions, lateral_offset:, route_style:)
     if route_style.to_sym == :railroad && hex.hex_number == "0618" && directions.sort == %w[northeast southwest]

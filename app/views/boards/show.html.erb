@@ -81,14 +81,16 @@
       >
         <% @hexes.each do |hex| %>
           <g class="hex-cell terrain-<%= hex.terrain_type %>">
-            <image
-              href="<%= asset_href(hex.terrain_asset_path) %>"
-              x="<%= hex.svg_x %>"
-              y="<%= hex.svg_y %>"
-              width="<%= Map::HexGridBuilder::HEX_WIDTH %>"
-              height="<%= Map::HexGridBuilder::HEX_HEIGHT %>"
-              preserveAspectRatio="none"
-            />
+            <% hex.terrain_asset_paths.each do |terrain_asset_path| %>
+              <image
+                href="<%= asset_href(terrain_asset_path) %>"
+                x="<%= hex.svg_x %>"
+                y="<%= hex.svg_y %>"
+                width="<%= Map::HexGridBuilder::HEX_WIDTH %>"
+                height="<%= Map::HexGridBuilder::HEX_HEIGHT %>"
+                preserveAspectRatio="none"
+              />
+            <% end %>
             <% if full_lake_hex?(hex) %>
               <polygon class="lake-fill" points="<%= flat_top_hex_points(hex) %>" />
             <% end %>
@@ -124,6 +126,17 @@
               <%= hex.label %>
             </text>
           </g>
+        <% end %>
+
+        <% forest_bridge_circles(@hexes).each do |circle| %>
+          <circle
+            class="forest-bridge-circle"
+            cx="<%= circle[:cx] %>"
+            cy="<%= circle[:cy] %>"
+            r="<%= circle[:r] %>"
+            fill="<%= circle[:fill] %>"
+            opacity="<%= circle[:opacity] %>"
+          />
         <% end %>
 
         <% river_paths = river_path_data(@hexes) %>

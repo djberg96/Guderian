@@ -184,6 +184,10 @@ body {
   stroke: none;
 }
 
+.forest-bridge-circle {
+  pointer-events: none;
+}
+
 .hex-cell text {
   fill: var(--grid);
   font-size: 12px;
