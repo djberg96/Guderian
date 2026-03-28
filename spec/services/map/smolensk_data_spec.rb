@@ -553,7 +553,7 @@ RSpec.describe Map::SmolenskData do
       expect(Hex.find_by!(hex_number: "0417").railroad_exits).to eq(%w[north south])
       expect(Hex.find_by!(hex_number: "0418").railroad_exits).to eq(%w[north south])
       expect(Hex.find_by!(hex_number: "0419").railroad_exits).to eq(%w[north south northeast])
-      expect(Hex.find_by!(hex_number: "0420").railroad_exits).to eq(%w[north south])
+      expect(Hex.find_by!(hex_number: "0420").railroad_exits).to eq(%w[north south southeast])
       expect(Hex.find_by!(hex_number: "0421").railroad_exits).to eq(%w[north southwest])
       expect(Hex.find_by!(hex_number: "0513").railroad_exits).to eq(%w[northwest southeast])
       expect(Hex.find_by!(hex_number: "0519").railroad_exits).to eq(%w[southwest northeast])
