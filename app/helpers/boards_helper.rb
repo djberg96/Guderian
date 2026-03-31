@@ -150,6 +150,7 @@ module BoardsHelper
 
   def route_lateral_offset(hex, feature_type)
     return 0.0 unless shared_route_lane?(hex)
+    return 0.0 if feature_type.to_s == "road" && hex.road_exits.one?
 
     feature_type.to_s == "road" ? -7.0 : 7.0
   end
