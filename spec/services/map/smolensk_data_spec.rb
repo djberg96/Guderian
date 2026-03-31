@@ -114,6 +114,45 @@ RSpec.describe Map::SmolenskData do
       expect(Hex.find_by!(hex_number: "2830").terrain_type).to eq("forest")
       expect(Hex.find_by!(hex_number: "2928").terrain_type).to eq("forest")
       expect(Hex.find_by!(hex_number: "2931").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "2617").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "2716").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "2717").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "2718").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "2815").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "2816").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "2817").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "2914").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "3008").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "3010").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "3012").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "3013").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "3014").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "3017").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "3109").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "3110").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "3113").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "3114").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "3210").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "3211").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "3212").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "3213").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "3309").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "3310").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "3408").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "3409").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "3606").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "3607").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "3608").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "3613").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "3614").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "3713").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "3814").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "3912").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "3913").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "4017").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "4214").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "3707").terrain_type).to eq("forest")
+      expect(Hex.find_by!(hex_number: "3708").terrain_type).to eq("forest")
       expect(Hex.find_by!(hex_number: "2505").terrain_type).to eq("forest")
       expect(Hex.find_by!(hex_number: "2506").terrain_type).to eq("forest")
       expect(Hex.find_by!(hex_number: "2606").terrain_type).to eq("forest")
@@ -170,6 +209,8 @@ RSpec.describe Map::SmolenskData do
       expect(Hex.find_by!(hex_number: "1804").terrain_type).to eq("swamp")
       expect(Hex.find_by!(hex_number: "1805").terrain_type).to eq("swamp")
       expect(Hex.find_by!(hex_number: "1905").terrain_type).to eq("swamp")
+      expect(Hex.find_by!(hex_number: "2518").terrain_type).to eq("swamp")
+      expect(Hex.find_by!(hex_number: "3416").terrain_type).to eq("swamp")
       expect(Hex.find_by!(hex_number: "2605").terrain_type).to eq("swamp")
       expect(Hex.find_by!(hex_number: "2904").terrain_type).to eq("swamp")
       expect(Hex.find_by!(hex_number: "2905").terrain_type).to eq("swamp")
@@ -683,6 +724,55 @@ RSpec.describe Map::SmolenskData do
         %w[3330 south],
         %w[3430 southwest],
         %w[3431 northwest]
+      ].each do |hex_number, direction|
+        expect(
+          HexsideFeature.find_by!(
+            hex: Hex.find_by!(hex_number: hex_number),
+            direction: direction,
+            feature_type: "river"
+          )
+        ).to be_present
+      end
+
+      [
+        %w[2817 north],
+        %w[2917 northwest],
+        %w[2917 north],
+        %w[2917 northeast],
+        %w[3017 north],
+        %w[3017 northeast],
+        %w[3118 north],
+        %w[3217 northwest],
+        %w[3217 north],
+        %w[3317 northwest],
+        %w[3317 north],
+        %w[3416 northwest],
+        %w[3415 southwest],
+        %w[3415 northwest],
+        %w[3414 southwest],
+        %w[3414 northwest],
+        %w[3414 north],
+        %w[3514 northwest],
+        %w[3513 southwest],
+        %w[3513 northwest],
+        %w[3512 southwest],
+        %w[3512 northwest],
+        %w[3511 southwest],
+        %w[3511 northwest],
+        %w[3510 southwest],
+        %w[3510 northwest],
+        %w[3509 southwest],
+        %w[3509 northwest],
+        %w[3509 north],
+        %w[3509 northeast],
+        %w[3609 north],
+        %w[3709 northwest],
+        %w[3708 southwest],
+        %w[3707 southwest],
+        %w[3707 northwest],
+        %w[3706 southwest],
+        %w[3706 northwest],
+        %w[3705 southwest]
       ].each do |hex_number, direction|
         expect(
           HexsideFeature.find_by!(
