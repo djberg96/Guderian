@@ -572,6 +572,60 @@ RSpec.describe Map::SmolenskData do
         ).to be_present
       end
 
+      [
+        %w[1830 northeast],
+        %w[1931 southwest],
+        %w[1931 northwest],
+        %w[1930 northwest],
+        %w[1930 north],
+        %w[1930 northeast],
+        %w[2030 north],
+        %w[2030 northeast],
+        %w[2131 north],
+        %w[2230 northwest],
+        %w[2229 southwest],
+        %w[2229 northwest],
+        %w[2228 southwest],
+        %w[2228 northwest],
+        %w[2228 north],
+        %w[2328 northwest],
+        %w[2327 southwest],
+        %w[2327 northwest],
+        %w[2327 north],
+        %w[2327 northeast],
+        %w[2427 north],
+        %w[2427 northeast],
+        %w[2528 north],
+        %w[2528 northeast],
+        %w[2528 southeast],
+        %w[2529 northeast],
+        %w[2629 north],
+        %w[2629 northeast],
+        %w[2730 north],
+        %w[2730 northeast],
+        %w[2730 southeast],
+        %w[2730 south],
+        %w[2630 southeast],
+        %w[2630 south],
+        %w[2531 southeast],
+        %w[2627 south],
+        %w[2627 southeast],
+        %w[2627 northeast],
+        %w[2626 southeast],
+        %w[2626 northeast],
+        %w[2625 southeast],
+        %w[2625 northeast],
+        %w[2624 southeast]
+      ].each do |hex_number, direction|
+        expect(
+          HexsideFeature.find_by!(
+            hex: Hex.find_by!(hex_number: hex_number),
+            direction: direction,
+            feature_type: "river"
+          )
+        ).to be_present
+      end
+
       expect(Hex.find_by!(hex_number: "0501").road_exits).to eq(%w[northwest southeast])
       expect(Hex.find_by!(hex_number: "0601").road_exits).to eq(%w[northwest southeast])
       expect(Hex.find_by!(hex_number: "0702").road_exits).to eq(%w[northwest south])
@@ -620,6 +674,18 @@ RSpec.describe Map::SmolenskData do
       expect(Hex.find_by!(hex_number: "1309").road_exits).to eq(%w[southwest southeast])
       expect(Hex.find_by!(hex_number: "1409").road_exits).to eq(%w[northwest northeast])
       expect(Hex.find_by!(hex_number: "1509").road_exits).to eq(%w[southwest])
+      expect(Hex.find_by!(hex_number: "2626").road_exits).to eq(%w[north])
+      expect(Hex.find_by!(hex_number: "2625").road_exits).to eq(%w[south northwest])
+      expect(Hex.find_by!(hex_number: "2525").road_exits).to eq(%w[southeast north])
+      expect(Hex.find_by!(hex_number: "2524").road_exits).to eq(%w[south northwest])
+      expect(Hex.find_by!(hex_number: "2423").road_exits).to eq(%w[southeast north])
+      expect(Hex.find_by!(hex_number: "2422").road_exits).to eq(%w[south north])
+      expect(Hex.find_by!(hex_number: "2421").road_exits).to eq(%w[south northwest])
+      expect(Hex.find_by!(hex_number: "2321").road_exits).to eq(%w[southeast north])
+      expect(Hex.find_by!(hex_number: "2320").road_exits).to eq(%w[south northwest])
+      expect(Hex.find_by!(hex_number: "2219").road_exits).to eq(%w[southeast north])
+      expect(Hex.find_by!(hex_number: "2218").road_exits).to eq(%w[south north])
+      expect(Hex.find_by!(hex_number: "2217").road_exits).to eq(%w[south])
       expect(Hex.find_by!(hex_number: "0112").railroad_exits).to eq(%w[southeast])
       expect(Hex.find_by!(hex_number: "0109").railroad_exits).to eq(%w[northwest southeast])
       expect(Hex.find_by!(hex_number: "0131").railroad_exits).to eq(%w[northeast])
